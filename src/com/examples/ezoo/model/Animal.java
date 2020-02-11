@@ -1,5 +1,8 @@
 package com.examples.ezoo.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Animal{
 	
 	private long animalID = 0L;
@@ -18,6 +21,12 @@ public class Animal{
 	
 	private String type = "";
 	private String healthStatus = "";
+	
+	private Long feedingSchedule = null;
+	
+	public static List<String> HEALTH_STATUSES = Arrays.asList("Healthy", "Sick", "Injured", "Dead");
+	public static List<String> TYPES = Arrays.asList(
+			"Mammal (Terrestrial)", "Mammal (Aquatic)", "Mammal (Aviary)", "Fish", "Amphibian", "Reptile", "Bird");
 	
 	public Animal(){}
 
@@ -143,13 +152,21 @@ public class Animal{
 	public void setHealthStatus(String healthStatus) {
 		this.healthStatus = healthStatus;
 	}
+	
+	public Long getFeedingSchedule() {
+		return this.feedingSchedule;
+	}
+	
+	public void setFeedingSchedule(long schedule) {
+		this.feedingSchedule = schedule;
+	}
 
 	@Override
 	public String toString() {
 		return "Animal [animalID=" + animalID + ", name=" + name + ", taxKingdom=" + taxKingdom + ", taxPhylum="
 				+ taxPhylum + ", taxClass=" + taxClass + ", taxOrder=" + taxOrder + ", taxFamily=" + taxFamily
 				+ ", taxGenus=" + taxGenus + ", taxSpecies=" + taxSpecies + ", height=" + height + ", weight=" + weight
-				+ ", type=" + type + ", healthStatus=" + healthStatus + "]";
+				+ ", type=" + type + ", healthStatus=" + healthStatus + ", feedingSchedule=" + feedingSchedule + "]";
 	}
 	
 	

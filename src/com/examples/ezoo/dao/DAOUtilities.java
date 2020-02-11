@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-
 /**
  * Class used to retrieve DAO Implementations. Serves as a factory.
  * 
@@ -19,13 +18,21 @@ public class DAOUtilities {
 	
 	private static AnimalDaoImpl animalDaoImpl;
 	private static Connection connection;
-
+	private static FeedingScheduleDAOImpl feedingDao;
+	
 	public static synchronized AnimalDAO getAnimalDao() {
 
 		if (animalDaoImpl == null) {
 			animalDaoImpl = new AnimalDaoImpl();
 		}
 		return animalDaoImpl;
+	}
+	
+	public static FeedingScheduleDAO getFeedingScheduleDAO() {
+		if (feedingDao == null) {
+			feedingDao = new FeedingScheduleDAOImpl();
+		}
+		return feedingDao;
 	}
 
 	static synchronized Connection getConnection() throws SQLException {
@@ -46,5 +53,7 @@ public class DAOUtilities {
 		}
 		return connection;
 	}
+
+
 
 }

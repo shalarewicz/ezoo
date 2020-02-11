@@ -11,9 +11,9 @@ import java.util.List;
 import com.examples.ezoo.model.Animal;
 
 public class AnimalDaoImpl implements AnimalDAO {
-
-	@Override
-	public List<Animal> getAllAnimals() {
+	
+	private List<Animal> getAnimals(String sql) {
+		
 		List<Animal> animals = new ArrayList<>();
 		Connection connection = null;
 		Statement stmt = null;
@@ -22,8 +22,6 @@ public class AnimalDaoImpl implements AnimalDAO {
 			connection = DAOUtilities.getConnection();
 
 			stmt = connection.createStatement();
-
-			String sql = "SELECT * FROM ANIMALS";
 
 			ResultSet rs = stmt.executeQuery(sql);
 
@@ -46,6 +44,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 
 				a.setType(rs.getString("type"));
 				a.setHealthStatus(rs.getString("healthstatus"));
+				a.setFeedingSchedule(rs.getLong("feeding_schedule"));
 				
 				animals.add(a);
 			}
@@ -67,6 +66,16 @@ public class AnimalDaoImpl implements AnimalDAO {
 
 		return animals;
 	}
+	
+	@Override
+	public List<Animal> getAllAnimals(long scheduleId) {
+		return getAnimals("SELECT * FROM ANIMALS WHERE feeding_schedule = " + scheduleId);
+	}
+	
+	@Override
+	public List<Animal> getAllAnimals() {
+		return getAnimals("SELECT * FROM ANIMALS");
+	}
 
 	@Override
 	public void saveAnimal(Animal animal) throws Exception {
@@ -76,7 +85,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 
 		try {
 			connection = DAOUtilities.getConnection();
-			String sql = "INSERT INTO ANIMALS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			String sql = "INSERT INTO ANIMALS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			// Setup PreparedStatement
 			stmt = connection.prepareStatement(sql);
@@ -98,6 +107,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 
 			stmt.setString(12, animal.getType());
 			stmt.setString(13, animal.getHealthStatus());
+			stmt.setObject(14, animal.getFeedingSchedule()); // Use set object for when feedingSchedule null
 			
 			success = stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -118,6 +128,114 @@ public class AnimalDaoImpl implements AnimalDAO {
 			throw new Exception("Insert animal failed: " + animal);
 		}
 
+	}
+	
+	@Override
+	public void removeAnimal(long id) throws Exception{
+		Connection connection = null;
+		PreparedStatement stmt = null;
+		int success = 0;
+		
+		try {
+			connection = DAOUtilities.getConnection();
+			
+			String delete = "DELETE FROM ANIMALS WHERE animalid = (?)";
+			
+			stmt = connection.prepareStatement(delete);
+			
+			stmt.setLong(1, id);
+			
+			success = stmt.executeUpdate();
+				
+				
+		} catch (SQLException sqe) {
+			sqe.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException sqe) {
+				sqe.printStackTrace();
+			}
+		}
+		
+		if (success == 0) {
+			// then update didn't occur, throw an exception
+			throw new Exception("Delete animal failed: " + id);
+		}
+	}
+	
+	@Override
+	public boolean updateAnimal(long id, Animal animal) throws Exception {
+		Connection connection = null;
+		PreparedStatement stmt = null;
+		int success = 0;
+		
+		try {
+			connection = DAOUtilities.getConnection();
+			String sql = "UPDATE ANIMALS SET name = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET taxKingdom = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET taxPhylum = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET taxClass = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET taxOrder = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET taxFamily = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET taxGenus = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET taxSpecies = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET height = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET weight = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET type = (?) WHERE animalid = (?);" +
+					     "UPDATE ANIMALS SET healthStatus = (?) WHERE animalid = (?);" +
+						 "UPDATE ANIMALS SET feeding_schedule = (?) WHERE animalid = (?);";
+					
+			stmt = connection.prepareStatement(sql);
+			
+			
+			stmt.setLong(2, animal.getAnimalID());
+			stmt.setLong(4, id);
+			stmt.setLong(6, id);
+			stmt.setLong(8, id);
+			stmt.setLong(10, id);
+			stmt.setLong(12, id);
+			stmt.setLong(14, id);
+			stmt.setLong(16, id);
+			stmt.setLong(18, id);
+			stmt.setLong(20, id);
+			stmt.setLong(22, id);
+			stmt.setLong(24, id);
+			stmt.setLong(26, id);
+			stmt.setString(1, animal.getName());
+			stmt.setString(3, animal.getTaxKingdom());
+			stmt.setString(5, animal.getTaxPhylum());
+			stmt.setString(7, animal.getTaxClass());
+			stmt.setString(9, animal.getTaxOrder());
+			stmt.setString(11, animal.getTaxFamily());
+			stmt.setString(13, animal.getTaxGenus());
+			stmt.setString(15, animal.getTaxSpecies());
+			stmt.setDouble(17, animal.getHeight());
+			stmt.setDouble(19, animal.getWeight());
+			stmt.setString(21, animal.getType());
+			stmt.setString(23, animal.getHealthStatus());
+			stmt.setObject(25, animal.getFeedingSchedule()); // Use setObject to support removing feeding schedule. This sets feedingSchedule to null. Could use special value and restrict all values to >0?
+			
+			success = stmt.executeUpdate();
+			
+		} catch (SQLException sqe) {
+			sqe.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+				if (connection != null)
+					connection.close();
+			} catch (SQLException sqe) {
+				sqe.printStackTrace();
+			}
+		}
+		return success == 1;
 	}
 
 }
