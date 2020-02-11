@@ -37,6 +37,9 @@
 					<th class="text-center">Weight(lbs)</th>
 					<th class="text-center">Type</th>
 					<th class="text-center">Health Status</th>
+					<th class="text-center">Feeding Schedule</th>
+					<th class="text-center"></th>
+					<th class="text-center"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -57,6 +60,36 @@
 						
 						<td><c:out value="${animal.type}" /></td>
 						<td><c:out value="${animal.healthStatus}" /></td>
+						<td><c:out value="${(animal.feedingSchedule) == 0 ? '' : animal.feedingSchedule}" /></td>
+						<td>
+							<form action="updateAnimal" method="get" class=form-horizontal>
+							    <div class="col-sm-4">
+							    	<input type="hidden" class="form-control" id="id" name="id" value="${animal.animalID}"/>
+							    	<input type="hidden" class="form-control" id="name" name="name" value="${animal.name}"/>
+									<input type="hidden" class="form-control" id="kingdom" name="taxKingdom" value="${animal.taxKingdom}"/>
+									<input type="hidden" class="form-control" id="phylum" name="taxPhylum" value="${animal.taxPhylum}"/>
+									<input type="hidden" class="form-control" id="class" name="taxClass" value="${animal.taxClass}"/>
+									<input type="hidden" class="form-control" id="order" name="taxOrder" value="${animal.taxOrder}"/>
+									<input type="hidden" class="form-control" id="family" name="taxFamily" value="${animal.taxFamily}"/>
+									<input type="hidden" class="form-control" id="genus" name="taxGenus" value="${animal.taxGenus}"/>
+									<input type="hidden" class="form-control" id="species" name="taxSpecies" value="${animal.taxSpecies}"/>
+									<input type="hidden" class="form-control" id="height" name="height" value="${animal.height}"/>
+									<input type="hidden" class="form-control" id="weight" name="weight" value="${animal.weight}"/>
+									<input type="hidden" class="form-control" id="type" name="type" value="${animal.type}"/>
+									<input type="hidden" class="form-control" id="healthStatus" name="healthStatus" value="${animal.healthStatus}"/>
+									<input type="hidden" class="form-control" id="feedingSchedule" name="feedingSchedule" value="${animal.feedingSchedule}"/>
+									<input type="submit" name="updateAnimal" value="Update" />
+							    </div>
+							</form>
+						</td>
+						<td>
+							<form action="deleteAnimal" method="post" class=form-horizontal>
+								<div class="col-sm-4">
+									<input type="submit" name="deleteAnimal" value="Delete" />
+								    <input type="hidden" class="form-control" id="id" name="id" value="${animal.animalID}"/>
+							    </div>
+							</form>
+						</td>
 					</tr>
 				</c:forEach>
 			</tbody>

@@ -56,8 +56,10 @@
                           <li><a href="animalCare">Home (Level 100)</a></li>
                           <li class="divider"></li>
                           <li><a href="addAnimal">Add Animal</a></li>
-                          <li><a href="#">Feeding Schedules</a></li>
-                          <li><a href="#">Add Feeding Schedule</a></li>
+                          <li><a href="feedingSchedules">Feeding Schedules</a></li>
+                          <li><a href="addSchedule">Add Feeding Schedule</a></li>
+                          <li><a href="deleteSchedule">Remove Feeding Schedule</a></li>
+                          <li><a href="assignSchedule">Assign Feeding Schedule</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
