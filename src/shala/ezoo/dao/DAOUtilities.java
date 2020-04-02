@@ -1,4 +1,4 @@
-package com.examples.ezoo.dao;
+package shala.ezoo.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

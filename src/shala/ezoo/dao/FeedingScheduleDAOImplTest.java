@@ -1,23 +1,26 @@
-package com.examples.ezoo.dao;
+package shala.ezoo.dao;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import com.examples.ezoo.model.Animal;
-import com.examples.ezoo.model.FeedingSchedule;
+import shala.ezoo.model.Animal;
+import shala.ezoo.model.FeedingSchedule;
 
 public class FeedingScheduleDAOImplTest {
 	FeedingScheduleDAO dao = new FeedingScheduleDAOImpl();
-	Set<FeedingSchedule> currentSchedules = new HashSet<FeedingSchedule>();
-	Set<Animal> currentAnimals = new HashSet<Animal>();
+	AnimalDAO adao = new AnimalDaoImpl();
+	List<FeedingSchedule> currentSchedules = dao.getAllSchedules();
+	List<Animal> currentAnimals = adao.getAllAnimals();
 	
 	
 	
 	void getAllSchedulesTest() {
 		System.out.println("Printing All schedules");
-		Set<FeedingSchedule> schedules = dao.getAllSchedules();
+		List<FeedingSchedule> schedules = dao.getAllSchedules();
 		assert currentSchedules.size() == schedules.size();
-		assert currentSchedules.equals(schedules);
+		assert currentSchedules.containsAll(schedules);
 		
 	    for (FeedingSchedule fs : schedules) {
 	      System.out.println(fs);
@@ -31,7 +34,7 @@ public class FeedingScheduleDAOImplTest {
 		
 		System.out.println("Adding schedule..." + schedule);
 		try {
-			dao.addSchedule(schedule);
+			dao.saveSchedule(schedule);
 		} catch (Exception e) {
 			e.printStackTrace();
 			assert false;
@@ -51,12 +54,6 @@ public class FeedingScheduleDAOImplTest {
 		// TODO Test removed from animals
 	}
 	
-	void getScheduleTest(Animal animal, FeedingSchedule expected) {
-		System.out.println("\nFetching Schedule for...." + animal);
-		FeedingSchedule actual = dao.getSchedule(animal);
-		assert actual.equals(expected);
-		System.out.println("done\n");
-	}
 	
 	void setFeedingScheduleTest(FeedingSchedule schedule, Animal animal) {
 		System.out.println("Setting schedule for..." + animal);
@@ -74,29 +71,14 @@ public class FeedingScheduleDAOImplTest {
 		System.out.println("done\n");
 	}
 	
-	void removeScheduleTest(Animal animal) {
-		System.out.println("Removing schedule for..." + animal);
-		dao.removeSchedule(animal);
-		
-		long currentID = animal.getAnimalID();
-		for (Animal a : this.currentAnimals) {
-			if (currentID == a.getAnimalID()) {
-				assert a.getFeedingSchedule() == 0L;
-			}
-		}
-		
-		System.out.println("done\n");
-	}
 	
 	void updateScheduleTimeTest(FeedingSchedule schedule, String expected) {
 		System.out.println("Updating schedule for..." + schedule);
-		System.out.println("Changing time to 10 AM");
+		System.out.println("Changing time to " + expected);
 		schedule.setFeedingTime(expected);
 		try {
-			dao.updateSchedule(schedule.getScheduleId(), schedule);
-			Animal animal = new Animal();
-			animal.setFeedingSchedule(schedule.getScheduleId());
-			assert expected == dao.getSchedule(animal).getFeedingTime();
+			dao.updateSchedule(schedule);
+			assert expected.contentEquals(dao.getScheduleByID(schedule.getScheduleId()).getFeedingTime());
 		} catch (Exception e) {
 			e.printStackTrace();
 			assert false;
@@ -110,10 +92,8 @@ public class FeedingScheduleDAOImplTest {
 		System.out.println("Changing recurrence to " + expected);
 		schedule.setRecurrence(expected);
 		try {
-			dao.updateSchedule(schedule.getScheduleId(), schedule);
-			Animal animal = new Animal();
-			animal.setFeedingSchedule(schedule.getScheduleId());
-			assert expected == dao.getSchedule(animal).getFeedingTime();
+			dao.updateSchedule(schedule);
+			assert expected.equals(dao.getScheduleByID(schedule.getScheduleId()).getRecurrence());
 		} catch (Exception e) {
 			e.printStackTrace();
 			assert false;
@@ -127,10 +107,8 @@ public class FeedingScheduleDAOImplTest {
 		System.out.println("Changing recurrence to " + expected);
 		schedule.setFood(expected);
 		try {
-			dao.updateSchedule(schedule.getScheduleId(), schedule);
-			Animal animal = new Animal();
-			animal.setFeedingSchedule(schedule.getScheduleId());
-			assert expected == dao.getSchedule(animal).getFeedingTime();
+			dao.updateSchedule(schedule);
+			assert expected.equals(dao.getScheduleByID(schedule.getScheduleId()).getFood());
 		} catch (Exception e) {
 			e.printStackTrace();
 			assert false;
@@ -144,10 +122,8 @@ public class FeedingScheduleDAOImplTest {
 		System.out.println("Changing notes to " + expected);
 		schedule.setNotes(expected);
 		try {
-			dao.updateSchedule(schedule.getScheduleId(), schedule);
-			Animal animal = new Animal();
-			animal.setFeedingSchedule(schedule.getScheduleId());
-			assert expected == dao.getSchedule(animal).getFeedingTime();
+			dao.updateSchedule(schedule);
+			assert expected.equals(dao.getScheduleByID(schedule.getScheduleId()).getNotes());
 		} catch (Exception e) {
 			e.printStackTrace();
 			assert false;
@@ -163,9 +139,7 @@ public class FeedingScheduleDAOImplTest {
 	   FeedingSchedule test4 = new FeedingSchedule(104L, "time4", "recurr4", "food4", "notes4");
 	   
 	   Animal animal = new Animal();
-	   
 	   FeedingScheduleDAOImplTest test = new FeedingScheduleDAOImplTest();
-	   test.currentSchedules.add(test1);
 	   test.getAllSchedulesTest();
 	   
 	   test.addScheduleTest(test2);
@@ -177,8 +151,6 @@ public class FeedingScheduleDAOImplTest {
 	   test.addScheduleTest(test3);
 	   test.addScheduleTest(test4);
 	   test.getAllSchedulesTest();
-	   
-	   test.getScheduleTest(animal, test1);
 	   
 	   test.updateScheduleFoodTest(test4, "new food");
 	   test.updateScheduleNotesTest(test4, "new note");

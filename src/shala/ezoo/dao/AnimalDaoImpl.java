@@ -1,4 +1,4 @@
-package com.examples.ezoo.dao;
+package shala.ezoo.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,11 +8,44 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.examples.ezoo.model.Animal;
+import shala.ezoo.model.Animal;
+import shala.ezoo.model.FeedingSchedule;
 
 public class AnimalDaoImpl implements AnimalDAO {
+    
+    private static Animal getAnimal(ResultSet rs, FeedingScheduleDAO fsDao) {
+        Animal a = new Animal();
+
+        try {
+            a.setAnimalID(rs.getLong("animalid"));
+            a.setName(rs.getString("name"));
+    
+            a.setTaxKingdom(rs.getString("taxkingdom"));
+            a.setTaxPhylum(rs.getString("taxphylum"));
+            a.setTaxClass(rs.getString("taxclass"));
+            a.setTaxOrder(rs.getString("taxorder"));
+            a.setTaxFamily(rs.getString("taxfamily"));
+            a.setTaxGenus(rs.getString("taxgenus"));
+            a.setTaxSpecies(rs.getString("taxspecies"));
+            
+            a.setHeight(rs.getDouble("height"));
+            a.setWeight(rs.getDouble("weight"));
+    
+            a.setType(rs.getString("type"));
+            a.setHealthStatus(rs.getString("healthstatus"));
+            a.setFeedingScheduleId(rs.getLong("feedingschedule"));
+            
+            
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+            return a;
+        
+    }
 	
-	private List<Animal> getAnimals(String sql) {
+	private static List<Animal> getAnimals(String sql) {
 		
 		List<Animal> animals = new ArrayList<>();
 		Connection connection = null;
@@ -24,29 +57,10 @@ public class AnimalDaoImpl implements AnimalDAO {
 			stmt = connection.createStatement();
 
 			ResultSet rs = stmt.executeQuery(sql);
+			FeedingScheduleDAO fsDao = new FeedingScheduleDAOImpl();
 
 			while (rs.next()) {
-				Animal a = new Animal();
-
-				a.setAnimalID(rs.getLong("animalid"));
-				a.setName(rs.getString("name"));
-
-				a.setTaxKingdom(rs.getString("taxkingdom"));
-				a.setTaxPhylum(rs.getString("taxphylum"));
-				a.setTaxClass(rs.getString("taxclass"));
-				a.setTaxOrder(rs.getString("taxorder"));
-				a.setTaxFamily(rs.getString("taxfamily"));
-				a.setTaxGenus(rs.getString("taxgenus"));
-				a.setTaxSpecies(rs.getString("taxspecies"));
-				
-				a.setHeight(rs.getDouble("height"));
-				a.setWeight(rs.getDouble("weight"));
-
-				a.setType(rs.getString("type"));
-				a.setHealthStatus(rs.getString("healthstatus"));
-				a.setFeedingSchedule(rs.getLong("feeding_schedule"));
-				
-				animals.add(a);
+				animals.add(getAnimal(rs, fsDao));
 			}
 
 		} catch (SQLException e) {
@@ -69,7 +83,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 	
 	@Override
 	public List<Animal> getAllAnimals(long scheduleId) {
-		return getAnimals("SELECT * FROM ANIMALS WHERE feeding_schedule = " + scheduleId);
+		return getAnimals("SELECT * FROM ANIMALS WHERE feedingschedule = " + scheduleId + ";");
 	}
 	
 	@Override
@@ -78,10 +92,9 @@ public class AnimalDaoImpl implements AnimalDAO {
 	}
 
 	@Override
-	public void saveAnimal(Animal animal) throws Exception {
+	public void saveAnimal(Animal animal) {
 		Connection connection = null;
 		PreparedStatement stmt = null;
-		int success = 0;
 
 		try {
 			connection = DAOUtilities.getConnection();
@@ -109,7 +122,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 			stmt.setString(13, animal.getHealthStatus());
 			stmt.setObject(14, animal.getFeedingSchedule()); // Use set object for when feedingSchedule null
 			
-			success = stmt.executeUpdate();
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -123,18 +136,12 @@ public class AnimalDaoImpl implements AnimalDAO {
 			}
 		}
 
-		if (success == 0) {
-			// then update didn't occur, throw an exception
-			throw new Exception("Insert animal failed: " + animal);
-		}
-
 	}
 	
 	@Override
-	public void removeAnimal(long id) throws Exception{
+	public void removeAnimal(long id) {
 		Connection connection = null;
 		PreparedStatement stmt = null;
-		int success = 0;
 		
 		try {
 			connection = DAOUtilities.getConnection();
@@ -145,8 +152,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 			
 			stmt.setLong(1, id);
 			
-			success = stmt.executeUpdate();
-				
+			stmt.executeUpdate();
 				
 		} catch (SQLException sqe) {
 			sqe.printStackTrace();
@@ -163,17 +169,13 @@ public class AnimalDaoImpl implements AnimalDAO {
 			}
 		}
 		
-		if (success == 0) {
-			// then update didn't occur, throw an exception
-			throw new Exception("Delete animal failed: " + id);
-		}
 	}
 	
 	@Override
-	public boolean updateAnimal(long id, Animal animal) throws Exception {
+	public void updateAnimal(Animal animal) {
 		Connection connection = null;
 		PreparedStatement stmt = null;
-		int success = 0;
+		long id = animal.getAnimalID();
 		
 		try {
 			connection = DAOUtilities.getConnection();
@@ -189,7 +191,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 					     "UPDATE ANIMALS SET weight = (?) WHERE animalid = (?);" +
 					     "UPDATE ANIMALS SET type = (?) WHERE animalid = (?);" +
 					     "UPDATE ANIMALS SET healthStatus = (?) WHERE animalid = (?);" +
-						 "UPDATE ANIMALS SET feeding_schedule = (?) WHERE animalid = (?);";
+						 "UPDATE ANIMALS SET feedingschedule = (?) WHERE animalid = (?);";
 					
 			stmt = connection.prepareStatement(sql);
 			
@@ -219,9 +221,9 @@ public class AnimalDaoImpl implements AnimalDAO {
 			stmt.setDouble(19, animal.getWeight());
 			stmt.setString(21, animal.getType());
 			stmt.setString(23, animal.getHealthStatus());
-			stmt.setObject(25, animal.getFeedingSchedule()); // Use setObject to support removing feeding schedule. This sets feedingSchedule to null. Could use special value and restrict all values to >0?
+			stmt.setLong(25, animal.getFeedingSchedule().getScheduleId());
 			
-			success = stmt.executeUpdate();
+			stmt.executeUpdate();
 			
 		} catch (SQLException sqe) {
 			sqe.printStackTrace();
@@ -235,7 +237,62 @@ public class AnimalDaoImpl implements AnimalDAO {
 				sqe.printStackTrace();
 			}
 		}
-		return success == 1;
 	}
+
+	@Override
+    public Animal getAnimalByID(long id) {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            connection = DAOUtilities.getConnection();
+            stmt = connection.prepareStatement("SELECT * FROM ANIMALS WHERE animalId = (?);");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            return getAnimal(rs, new FeedingScheduleDAOImpl());
+            
+        } catch(SQLException sqe) {
+            sqe.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException sqe) {
+                sqe.printStackTrace();
+            }
+        }
+        
+        return null; // TODO Throw Exception? nulls are bad
+    }
+
+    public void removeSchedule(long animalId) {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            connection = DAOUtilities.getConnection();
+            String sql = "UPDATE ANIMALS SET feedingschedule = (?) WHERE animalid = (?);";
+            stmt = connection.prepareStatement(sql);
+            stmt.setObject(1, null);
+            stmt.setLong(2, animalId);
+            stmt.executeUpdate();
+            
+        } catch (SQLException sqe) {
+            sqe.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException sqe) {
+                sqe.printStackTrace();
+            }
+        }
+        
+    }
 
 }

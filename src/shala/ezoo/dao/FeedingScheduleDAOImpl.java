@@ -1,27 +1,44 @@
-package com.examples.ezoo.dao;
+package shala.ezoo.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.examples.ezoo.model.Animal;
-import com.examples.ezoo.model.FeedingSchedule;
+import shala.ezoo.model.Animal;
+import shala.ezoo.model.FeedingSchedule;
 
 public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
+    
+    private static FeedingSchedule getSchedule(ResultSet rs, AnimalDAO dao) {
+        FeedingSchedule fs = new FeedingSchedule();
+        
+        try {
+            fs.setScheduleId(rs.getLong("scheduleid"));
+            fs.setFeedingTime(rs.getString("feeding_time"));
+            fs.setRecurrence(rs.getString("recurrence"));
+            fs.setFood(rs.getString("food"));
+            fs.setNotes(rs.getString("notes"));
+            fs.addAnimals(dao.getAllAnimals(fs.getScheduleId()));
+        
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return fs;
+    }
 
 	@Override
-	public boolean addSchedule(FeedingSchedule schedule) throws Exception{
+	public void saveSchedule(FeedingSchedule schedule) {
 		Connection connection = null;
 		PreparedStatement stmt = null;
-		int success = 0;
 		
 		try {
 			connection = DAOUtilities.getConnection();
-			String sql = "INSERT INTO \"FEEDING_SCHEDULES\" VALUES (?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO FEEDING_SCHEDULES VALUES (?, ?, ?, ?, ?)";
 			
 			stmt = connection.prepareStatement(sql);
 			
@@ -31,7 +48,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			stmt.setString(4, schedule.getFood());
 			stmt.setString(5, schedule.getNotes());
 			
-			success = stmt.executeUpdate();
+			stmt.executeUpdate();
 			
 		} catch (SQLException sqe) {
 			sqe.printStackTrace();
@@ -45,11 +62,10 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 				sqe.printStackTrace();
 			}
 		}
-		return success == 1;
 	}
 
 	@Override
-	public boolean removeSchedule(long id) {
+	public void removeSchedule(long id) {
 		
 		Connection connection = null;
 		PreparedStatement animalStmt = null;
@@ -61,7 +77,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			
 			
 			// Remove all references to the schedule in animals
-			String animalsUpdate = "UPDATE ANIMALS SET feeding_schedule = null WHERE feeding_schedule = (?)";
+			String animalsUpdate = "UPDATE ANIMALS SET feedingschedule = null WHERE feedingschedule = (?)";
 			
 			animalStmt = connection.prepareStatement(animalsUpdate);
 			
@@ -71,7 +87,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			
 			// Remove the schedule from FEEDING_SCHEDULES
 			
-			String delete = "DELETE FROM \"FEEDING_SCHEDULES\" WHERE schedule_id = (?)";
+			String delete = "DELETE FROM FEEDING_SCHEDULES WHERE scheduleid = (?)";
 			
 			feedingStmt = connection.prepareStatement(delete);
 			
@@ -98,12 +114,11 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			}
 		}
 		
-		return success == 1;
 	}
 
 	@Override
-	public Set<FeedingSchedule> getAllSchedules() {
-		Set<FeedingSchedule> result = new HashSet<FeedingSchedule>();
+	public List<FeedingSchedule> getAllSchedules() {
+		List<FeedingSchedule> result = new ArrayList<FeedingSchedule>();
 		
 		Connection connection = null;
 		Statement stmt = null;
@@ -112,7 +127,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			connection = DAOUtilities.getConnection();
 			stmt = connection.createStatement();
 			
-			String sql = "SELECT * FROM \"FEEDING_SCHEDULES\"";
+			String sql = "SELECT * FROM FEEDING_SCHEDULES";
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			AnimalDAO dao = DAOUtilities.getAnimalDao();
@@ -121,7 +136,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 				
 				FeedingSchedule fs = new FeedingSchedule();
 			
-				fs.setScheduleId(rs.getLong("schedule_id"));
+				fs.setScheduleId(rs.getLong("scheduleid"));
 				fs.setFeedingTime(rs.getString("feeding_time"));
 				fs.setRecurrence(rs.getString("recurrence"));
 				fs.setFood(rs.getString("food"));
@@ -149,72 +164,21 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 		return result;
 	}
 
-	@Override
-	public FeedingSchedule getSchedule(Animal animal) {
-		FeedingSchedule fs = new FeedingSchedule();
-		
-		Connection connection = null;
-		PreparedStatement stmt = null;
-		
-		try {
-			connection = DAOUtilities.getConnection();
-			
-			String sql = "SELECT * FROM \"FEEDING_SCHEDULES\" WHERE schedule_id = "
-					+ "(SELECT feeding_schedule FROM ANIMALS WHERE animalid = (?))";
-			
-			stmt = connection.prepareStatement(sql);
-			
-			stmt.setLong(1, animal.getAnimalID());
-			
-			ResultSet rs = stmt.executeQuery();
-			
-			if (rs.next()) {
-				fs.setScheduleId(rs.getLong("schedule_id"));
-				fs.setFeedingTime(rs.getString("feeding_time"));
-				fs.setRecurrence(rs.getString("recurrence"));
-				fs.setFood(rs.getString("food"));
-				fs.setNotes(rs.getString("notes"));
-				
-				return fs;
-			}
-				
-				
-		} catch (SQLException sqe) {
-			sqe.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (connection != null) {
-					connection.close();
-				}
-			} catch (SQLException sqe) {
-				sqe.printStackTrace();
-			}
-		}
-		
-		return null; // Schedule does not exist TODO Exception or EmptySchedule
-	}
 
 	@Override
-	public boolean setFeedingSchedule(FeedingSchedule schedule, Animal animal) throws Exception, SQLException {
+	public void setFeedingSchedule(FeedingSchedule schedule, Animal animal) {
 		// Update animal and add to Feeding_Schedules if schedule does not exist
 		
-		addSchedule(schedule); 
-		animal.setFeedingSchedule(schedule.getScheduleId());
-		
-		return this.setFeedingSchedule(schedule.getScheduleId(), animal.getAnimalID());
+		saveSchedule(schedule); 
+		this.setFeedingSchedule(schedule.getScheduleId(), animal.getAnimalID());
 	}
 
 	@Override
-	public boolean setFeedingSchedule(long scheduleId, long animalId) throws SQLException {
+	public void setFeedingSchedule(long scheduleId, long animalId) {
 		// Update animal and add to Feeding_Schedules if schedule does not exist
 		
 		Connection connection = null;
 		PreparedStatement stmt = null;
-		int success = 0;
-
 		try {
 			connection = DAOUtilities.getConnection();
 			
@@ -225,12 +189,12 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			stmt.setLong(1,  scheduleId);
 			stmt.setLong(2,  animalId);
 			
-			success = stmt.executeUpdate();
+			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			// TODO Use NotFoundException to prevent other SQL errors giving this error
-			throw new SQLException("Animal and Schedule must be added before assignemt");
+//			throw new SQLException("Animal and Schedule must be added before assignemt");
 		} finally {
 			try {
 				if (stmt != null)
@@ -242,57 +206,20 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			}
 		}
 		
-		
-		return success == 1; // Exception instead? 
 	}
 
-	@Override
-	public boolean removeSchedule(Animal animal) {
-
-		Connection connection = null;
-		PreparedStatement stmt = null;
-		int success = 0;
-
-		try {
-			connection = DAOUtilities.getConnection();
-			
-			String sql = "UPDATE ANIMALS SET feeding_schedule = null WHERE animalid = (?)";
-
-			// Setup PreparedStatement
-			stmt = connection.prepareStatement(sql);
-			stmt.setLong(1, animal.getAnimalID());
-			
-			success = stmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-				if (connection != null)
-					connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
-		return success == 1;
-	}
 
 	@Override
-	public boolean updateSchedule(long id, FeedingSchedule schedule) throws Exception {
+	public void updateSchedule(FeedingSchedule schedule) {
 		Connection connection = null;
 		PreparedStatement stmt = null;
-		int success = 0;
 		
 		try {
 			connection = DAOUtilities.getConnection();
-			String sql = "UPDATE \"FEEDING_SCHEDULES\" SET feeding_time = (?) WHERE schedule_id = (?);" +
-						 "UPDATE \"FEEDING_SCHEDULES\" SET recurrence = (?) WHERE schedule_id = (?); "  +
-						 "UPDATE \"FEEDING_SCHEDULES\" SET food = (?) WHERE schedule_id = (?); " +
-						 "UPDATE \"FEEDING_SCHEDULES\" SET notes = (?) WHERE schedule_id = (?); ";
+			String sql = "UPDATE FEEDING_SCHEDULES SET feeding_time = (?) WHERE scheduleid = (?);" +
+						 "UPDATE FEEDING_SCHEDULES SET recurrence = (?) WHERE scheduleid = (?); "  +
+						 "UPDATE FEEDING_SCHEDULES SET food = (?) WHERE scheduleid = (?); " +
+						 "UPDATE FEEDING_SCHEDULES SET notes = (?) WHERE scheduleid = (?); ";
 					
 			
 			stmt = connection.prepareStatement(sql);
@@ -306,7 +233,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			stmt.setString(5, schedule.getFood());
 			stmt.setString(7, schedule.getNotes());
 			
-			success = stmt.executeUpdate();
+			stmt.executeUpdate();
 			
 		} catch (SQLException sqe) {
 			sqe.printStackTrace();
@@ -320,7 +247,34 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 				sqe.printStackTrace();
 			}
 		}
-		return success == 1;
 	}
+
+    public FeedingSchedule getScheduleByID(long id) {
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            connection = DAOUtilities.getConnection();
+            stmt = connection.prepareStatement("SELECT * FROM FEEDING_SCHEDULES WHERE scheduleId = (?);");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            return getSchedule(rs, new AnimalDaoImpl());
+            
+        } catch(SQLException sqe) {
+            sqe.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException sqe) {
+                sqe.printStackTrace();
+            }
+        }
+        
+        return null; 
+    }
 
 }
