@@ -1,7 +1,6 @@
-package com.examples.ezoo.servlets;
+package shala.ezoo.servlets;
 
 import java.io.IOException;
-import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,23 +8,55 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.examples.ezoo.dao.AnimalDAO;
-import com.examples.ezoo.dao.DAOUtilities;
-import com.examples.ezoo.dao.FeedingScheduleDAO;
-import com.examples.ezoo.model.Animal;
+import shala.ezoo.dao.AnimalDAO;
+import shala.ezoo.dao.DAOUtilities;
+import shala.ezoo.model.Animal;
 
 /**
- * Servlet implementation class AddAnimalServlet
+ * Servlet implementation class UpdateAnimalServlet
  */
-@WebServlet("/addAnimal")
-public class AddAnimalServlet extends HttpServlet {
-	
+@WebServlet(name = "updateAnimal", urlPatterns = { "/updateAnimal" })
+public class UpdateAnimalServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("addAnimal.jsp").forward(request, response);
+		long id = Long.parseLong(request.getParameter("id"));
+		String name = request.getParameter("name");
+		String kingdom = request.getParameter("taxKingdom");
+		String phylum = request.getParameter("taxPhylum");
+		String clazz = request.getParameter("taxClass");
+		String order = request.getParameter("taxOrder");
+		String family = request.getParameter("taxFamily");
+		String genus = request.getParameter("taxGenus");
+		String species = request.getParameter("taxSpecies");
+		double height = Double.parseDouble(request.getParameter("height"));
+		double weight = Double.parseDouble(request.getParameter("weight"));
+		String type = request.getParameter("type");
+		String healthStatus = request.getParameter("healthStatus");
+		Long feedingSchedule = Long.parseLong(request.getParameter("feedingSchedule"));
+		
+		Animal animal = new Animal(
+				id, 
+				name, 
+				kingdom,
+				phylum,
+				clazz,
+				order,
+				family,
+				genus,
+				species,
+				height,
+				weight,
+				type,
+				healthStatus);
+		animal.setFeedingSchedule(DAOUtilities.getFeedingScheduleDAO().getScheduleByID(feedingSchedule));
+		
+		request.getSession().setAttribute("updatedAnimal", animal);
+		request.getSession().setAttribute("healthStatuses", Animal.HEALTH_STATUSES);
+		request.getSession().setAttribute("types", Animal.TYPES);
+		request.getRequestDispatcher("updateAnimal.jsp").forward(request, response);
 	}
 	
 	@Override
@@ -38,7 +69,7 @@ public class AddAnimalServlet extends HttpServlet {
 
 		String kingdom = request.getParameter("kingdom");
 		String phylum = request.getParameter("phylum");
-		String clazz = request.getParameter("clazz");
+		String clazz = request.getParameter("class");
 		String order = request.getParameter("order");
 		String family = request.getParameter("family");
 		String genus = request.getParameter("genus");
@@ -70,43 +101,28 @@ public class AddAnimalServlet extends HttpServlet {
 		Long feedingSchedule;
 		try {
 			feedingSchedule = Long.parseLong(request.getParameter("feedingSchedule"));
-			animalToSave.setFeedingSchedule(feedingSchedule);
+			animalToSave.setFeedingSchedule(DAOUtilities.getFeedingScheduleDAO().getScheduleByID(feedingSchedule));
 		} catch (NumberFormatException nfe) {
 			feedingSchedule = null;
 		}
 		
-		
 		//Call DAO method
 		AnimalDAO dao = DAOUtilities.getAnimalDao();
-		FeedingScheduleDAO feeddao = DAOUtilities.getFeedingScheduleDAO();
 		try {
-			dao.saveAnimal(animalToSave);
-			if (feedingSchedule != null) {
-				feeddao.setFeedingSchedule(feedingSchedule, id);
-			}
-			request.getSession().setAttribute("message", "Animal successfully created");
+			dao.updateAnimal(animalToSave);
+			request.getSession().setAttribute("message", "Animal successfully updated");
 			request.getSession().setAttribute("messageClass", "alert-success");
 			response.sendRedirect("animalCare");
 
 
-		}catch(SQLIntegrityConstraintViolationException e){
-			e.printStackTrace();
-			
-			//change the message
-			request.getSession().setAttribute("message", "Id of " + animalToSave.getAnimalID() + " is already in use");
-			request.getSession().setAttribute("messageClass", "alert-danger");
-			
-			request.getRequestDispatcher("addAnimal.jsp").forward(request, response);
-			
 		}catch (Exception e){
 			e.printStackTrace();
 			
 			//change the message
-			request.getSession().setAttribute("message", "There was a problem creating the animal at this time");
+			request.getSession().setAttribute("message", "There was a problem updating the animal at this time");
 			request.getSession().setAttribute("messageClass", "alert-danger");
 			
-			request.getRequestDispatcher("addAnimal.jsp").forward(request, response);
-
+			response.sendRedirect("animalCare");
 		}
 	}
 

@@ -1,4 +1,4 @@
-package com.examples.ezoo.servlets;
+package shala.ezoo.servlets;
 
 import java.io.IOException;
 
@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.examples.ezoo.dao.DAOUtilities;
-import com.examples.ezoo.dao.FeedingScheduleDAO;
-import com.examples.ezoo.model.FeedingSchedule;
+import shala.ezoo.dao.DAOUtilities;
+import shala.ezoo.dao.FeedingScheduleDAO;
+import shala.ezoo.model.FeedingSchedule;
 
 /**
  * Servlet implementation class UpdateFeedingScheduleServlet
@@ -48,7 +48,7 @@ public class UpdateFeedingScheduleServlet extends HttpServlet {
 		FeedingScheduleDAO dao = DAOUtilities.getFeedingScheduleDAO();
 		
 		try	{
-			dao.updateSchedule(id, schedule);
+			dao.updateSchedule(schedule);
 			request.getSession().setAttribute("message", "Schedule successfully updated");
 			request.getSession().setAttribute("messageClass", "alert-success");
 			response.sendRedirect("feedingSchedules");

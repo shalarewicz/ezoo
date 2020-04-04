@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import shala.ezoo.exceptions.DatabaseConstraintViolationException;
 import shala.ezoo.model.Animal;
-import shala.ezoo.model.FeedingSchedule;
 
 public class AnimalDaoImpl implements AnimalDAO {
     
@@ -92,7 +92,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 	}
 
 	@Override
-	public void saveAnimal(Animal animal) {
+	public void saveAnimal(Animal animal) throws DatabaseConstraintViolationException{
 		Connection connection = null;
 		PreparedStatement stmt = null;
 
@@ -125,6 +125,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new DatabaseConstraintViolationException("Failed to save animal: " + animal.getAnimalID(), e);
 		} finally {
 			try {
 				if (stmt != null)

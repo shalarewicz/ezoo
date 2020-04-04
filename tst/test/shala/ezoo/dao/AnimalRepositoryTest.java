@@ -3,7 +3,7 @@ import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import shala.ezoo.config.Config;
 import shala.ezoo.dao.AnimalDAO;
@@ -28,6 +28,12 @@ public class AnimalRepositoryTest {
             a.setAnimalID(testId);
             repo.saveAnimal(a);
             System.out.println("done");
+            
+            try {
+                repo.saveAnimal(a);
+            } catch (DataIntegrityViolationException e) {
+                System.out.println("Test Adding Duplicate...PASS");
+            }
             
     		// Get an animal
                 System.out.println("\nRetrieving animal");

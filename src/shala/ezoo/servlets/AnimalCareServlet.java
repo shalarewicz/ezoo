@@ -1,4 +1,4 @@
-package com.examples.ezoo.servlets;
+package shala.ezoo.servlets;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.examples.ezoo.dao.AnimalDAO;
-import com.examples.ezoo.dao.DAOUtilities;
-import com.examples.ezoo.model.Animal;
+import shala.ezoo.dao.AnimalDAO;
+import shala.ezoo.dao.DAOUtilities;
+import shala.ezoo.model.Animal;
 
 
 /**

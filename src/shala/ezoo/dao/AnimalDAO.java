@@ -1,7 +1,8 @@
 package shala.ezoo.dao;
 
-import java.sql.SQLException;
 import java.util.List;
+
+import org.springframework.dao.DataIntegrityViolationException;
 
 import shala.ezoo.model.Animal;
 
@@ -21,7 +22,7 @@ public interface AnimalDAO {
 	/**
 	 * @return List of all Animals
 	 */
-	List<Animal> getAllAnimals();
+	public List<Animal> getAllAnimals();
 	
 	
 	/**
@@ -29,13 +30,13 @@ public interface AnimalDAO {
 	 * @param scheduleId feeding schedule ID
 	 * @return List of Animals with the given feeding schedule
 	 */
-	List<Animal> getAllAnimals(long scheduleId);
+	public List<Animal> getAllAnimals(long scheduleId);
 
 	/**
 	 * Used to persist the animal to the datastore
-	 * @param animalToSave
+	 * @param animal
 	 */
-	void saveAnimal(Animal animalToSave) throws SQLException;
+	void saveAnimal(Animal animal) throws DataIntegrityViolationException;
 	
 	/**
 	 * Removes an animal from the database

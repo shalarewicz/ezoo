@@ -3,6 +3,7 @@ import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import shala.ezoo.config.Config;
 import shala.ezoo.dao.AnimalDAO;
@@ -19,6 +20,7 @@ public class FeedingScheduleRepositoryTest {
 		AnimalDAO aRepo = context.getBean(AnimalDAO.class);
 		long testId = 2000L;
 		long testId2 = 2001L;
+		long testId3 = 2002L;
 		long notPresentId = 3000L;
 		long animalId = 2000L;
 		long animalId2 = 2001L;
@@ -31,9 +33,15 @@ public class FeedingScheduleRepositoryTest {
     		    try {
     		        repo.saveSchedule(fs);
     		    } 
-    		    catch (Exception e) {
+    		    catch (DataIntegrityViolationException e) {
     		        throw new RuntimeException("FAILED adding schedule");
     	        } 
+    		    
+    		    try {
+                    repo.saveSchedule(fs);
+                } catch (DataIntegrityViolationException e) {
+                    System.out.println("Test Adding Duplicate...PASS");
+                }
     		    
 		    System.out.print("Done");
 		    
@@ -109,6 +117,18 @@ public class FeedingScheduleRepositoryTest {
                 if (!aRepo.getAnimalByID(animalId2).getFeedingSchedule().equals(fs2)) {
                     throw new RuntimeException("FAILED to set schedule for ids");
                 }
+                
+             // Set a feeding Schedule if schedule not present
+                System.out.println("Setting schedule for ids");
+                    
+                    FeedingSchedule fs3 = new FeedingSchedule();
+                    fs2.setScheduleId(testId3);
+                    
+                    repo.setFeedingSchedule(fs3, a2);
+                    
+                    if (!aRepo.getAnimalByID(animalId2).getFeedingSchedule().equals(fs3)) {
+                        throw new RuntimeException("FAILED to set schedule for ids");
+                    }
             
     		System.out.println("PASS");
     		
@@ -120,10 +140,9 @@ public class FeedingScheduleRepositoryTest {
 		    
 		    aRepo.removeAnimal(animalId2);
 		    aRepo.removeAnimal(animalId);
-		    aRepo.removeAnimal(4001L);
 		    repo.removeSchedule(testId);
 		    repo.removeSchedule(testId2);
-		    repo.removeSchedule(4001L);
+		    repo.removeSchedule(testId3);
 		    
 		    ((AnnotationConfigApplicationContext) context).close();
 		}

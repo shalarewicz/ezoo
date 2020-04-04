@@ -1,10 +1,9 @@
 /**
  * 
  */
-package com.examples.ezoo.servlets;
+package shala.ezoo.servlets;
 
 import java.io.IOException;
-import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,9 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.examples.ezoo.dao.DAOUtilities;
-import com.examples.ezoo.dao.FeedingScheduleDAO;
-import com.examples.ezoo.model.FeedingSchedule;
+import shala.ezoo.dao.DAOUtilities;
+import shala.ezoo.dao.FeedingScheduleDAO;
+import shala.ezoo.exceptions.DatabaseConstraintViolationException;
+import shala.ezoo.model.FeedingSchedule;
 
 /**
  * @author shala
@@ -45,12 +45,12 @@ public class CreateFeedingScheduleServlet extends HttpServlet {
 		FeedingScheduleDAO dao = DAOUtilities.getFeedingScheduleDAO();
 		
 		try	{
-			dao.addSchedule(schedule);
+			dao.saveSchedule(schedule);
 			req.getSession().setAttribute("message", "Schedule successfully added");
 			req.getSession().setAttribute("messageClass", "alert-success");
 			resp.sendRedirect("feedingSchedules");
 			
-		} catch (SQLIntegrityConstraintViolationException sqe){ 
+		} catch (DatabaseConstraintViolationException sqe){ 
 			sqe.printStackTrace();
 			
 			// update message

@@ -1,4 +1,4 @@
-package com.examples.ezoo.servlets;
+package shala.ezoo.servlets;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.examples.ezoo.dao.DAOUtilities;
-import com.examples.ezoo.dao.FeedingScheduleDAO;
+import shala.ezoo.dao.DAOUtilities;
+import shala.ezoo.dao.FeedingScheduleDAO;
 
 /**
  * Servlet implementation class DeleteFeedingScheduleServlet

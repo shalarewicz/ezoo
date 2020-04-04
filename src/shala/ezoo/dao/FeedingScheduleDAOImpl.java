@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import shala.ezoo.exceptions.DatabaseConstraintViolationException;
 import shala.ezoo.model.Animal;
 import shala.ezoo.model.FeedingSchedule;
 
@@ -32,7 +33,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
     }
 
 	@Override
-	public void saveSchedule(FeedingSchedule schedule) {
+	public void saveSchedule(FeedingSchedule schedule) throws DatabaseConstraintViolationException {
 		Connection connection = null;
 		PreparedStatement stmt = null;
 		
@@ -52,6 +53,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			
 		} catch (SQLException sqe) {
 			sqe.printStackTrace();
+			throw new DatabaseConstraintViolationException("Failed to save animal: " + schedule.getScheduleId(), sqe);
 		} finally {
 			try {
 				if (stmt != null)
@@ -166,7 +168,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 
 
 	@Override
-	public void setFeedingSchedule(FeedingSchedule schedule, Animal animal) {
+	public void setFeedingSchedule(FeedingSchedule schedule, Animal animal) throws DatabaseConstraintViolationException {
 		// Update animal and add to Feeding_Schedules if schedule does not exist
 		
 		saveSchedule(schedule); 

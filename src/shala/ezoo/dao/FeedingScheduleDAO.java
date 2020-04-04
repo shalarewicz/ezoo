@@ -2,6 +2,9 @@ package shala.ezoo.dao;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
+import shala.ezoo.exceptions.DatabaseConstraintViolationException;
 import shala.ezoo.model.Animal;
 import shala.ezoo.model.FeedingSchedule;
 
@@ -15,9 +18,10 @@ public interface FeedingScheduleDAO {
     /**
       * Adds the given schedule to the database
       * @param schedule
-      * @throws Exception if a constraint violation occurs
+      * @throws DataIntegrityViolationException if a constraint violation occurs
       */
-     public void saveSchedule(FeedingSchedule schedule) throws Exception;
+    // TODO Create 
+     public void saveSchedule(FeedingSchedule schedule) throws DataIntegrityViolationException;
      /**
       * Updates the given schedule in the database. Adds the schedule if not already present.
       * @param schedule
@@ -43,13 +47,13 @@ public interface FeedingScheduleDAO {
       * @param schedule new schedule. Cannot be null. Overwrites existing schedule Id
       * @param animal animal receiving the schedule Cannot be null.
       */
-     public void setFeedingSchedule(FeedingSchedule schedule, Animal animal);
+     public void setFeedingSchedule(FeedingSchedule schedule, Animal animal) throws DataIntegrityViolationException;
      
      /**
       * Sets the schedule for the given animal. No action if schedule or animal not present in db
       * @param schedule id of schedule being assigned to the animal
       * @param animal id of animal receiving the schedule
       */
-     public void setFeedingSchedule(long schedule, long animal);
+     public void setFeedingSchedule(long schedule, long animal) throws DatabaseConstraintViolationException;
 
 }

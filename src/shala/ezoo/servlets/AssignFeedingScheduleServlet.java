@@ -1,7 +1,6 @@
-package com.examples.ezoo.servlets;
+package shala.ezoo.servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,8 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.examples.ezoo.dao.DAOUtilities;
-import com.examples.ezoo.dao.FeedingScheduleDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import shala.ezoo.config.Config;
+import shala.ezoo.dao.FeedingScheduleDAO;
 
 /**
  * Servlet implementation class AssignFeedingScheduleServlet
@@ -26,26 +28,18 @@ public class AssignFeedingScheduleServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		FeedingScheduleDAO dao = DAOUtilities.getFeedingScheduleDAO();
-		
+	    ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+        FeedingScheduleDAO repo = context.getBean(FeedingScheduleDAO.class);
+        
 		long scheduleId = Long.parseLong(request.getParameter("scheduleId"));
 		long animalId = Long.parseLong(request.getParameter("animalId"));
 		try {
 			 // TODO By using objects risk adding blank animals/schedules to database. Use IDs? instead? 
-			dao.setFeedingSchedule(scheduleId, animalId); 
+			repo.setFeedingSchedule(scheduleId, animalId); 
 			request.getSession().setAttribute("message", "Schedule successfully assigned");
 			request.getSession().setAttribute("messageClass", "alert-success");
 			response.sendRedirect("assignSchedule");
-
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			// Have the user add the animal to the database. 
-			request.getSession().setAttribute("message", "Pleaase add the animal and feeding schedule prior to assigning it a schedule.");
-			request.getSession().setAttribute("messageClass", "alert-danger");
-			
-			request.getRequestDispatcher("addAnimal.jsp").forward(request, response);
-			
+					
 		} catch (Exception e){
 			e.printStackTrace();
 			
@@ -55,6 +49,8 @@ public class AssignFeedingScheduleServlet extends HttpServlet {
 			
 			request.getRequestDispatcher("assignSchedule.jsp").forward(request, response);
 
+		} finally {
+		    ((AnnotationConfigApplicationContext) context).close();
 		}
 	}
 

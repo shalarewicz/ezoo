@@ -3,20 +3,16 @@ package shala.ezoo.dao;
 import java.util.List;
 
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.hibernate.SessionFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import shala.ezoo.model.Animal;
-import shala.ezoo.model.FeedingSchedule;
 
 @Repository
-@Transactional
+@Transactional(rollbackOn=DataIntegrityViolationException.class)
 public class HibernateAnimalDAOImpl implements AnimalDAO {
 	
 	private SessionFactory sessionFactory;
@@ -37,8 +33,8 @@ public class HibernateAnimalDAOImpl implements AnimalDAO {
 	}
 
 	@Override
-	public void saveAnimal(Animal animal) {
-		sessionFactory.getCurrentSession().save(animal);
+	public void saveAnimal(Animal animal) throws DataIntegrityViolationException {
+           sessionFactory.getCurrentSession().save(animal);
 	}
 
 	@Override
