@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import shala.ezoo.exceptions.DatabaseConstraintViolationException;
+import shala.ezoo.exceptions.ResourceNotFoundException;
 import shala.ezoo.model.Animal;
 import shala.ezoo.model.FeedingSchedule;
 
@@ -12,7 +13,7 @@ public interface FeedingScheduleDAO {
 	
     /**
      * @param id
-     * @return Schedule specified by the id
+     * @return Schedule specified by the id or null if schedule does not persist in the database
      */
     public FeedingSchedule getScheduleByID(long id);
     /**

@@ -33,8 +33,6 @@ public class AnimalDaoImpl implements AnimalDAO {
     
             a.setType(rs.getString("type"));
             a.setHealthStatus(rs.getString("healthstatus"));
-            a.setFeedingScheduleId(rs.getLong("feedingschedule"));
-            
             
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -92,9 +90,10 @@ public class AnimalDaoImpl implements AnimalDAO {
 	}
 
 	@Override
-	public void saveAnimal(Animal animal) throws DatabaseConstraintViolationException{
+	public boolean saveAnimal(Animal animal) throws DatabaseConstraintViolationException {
 		Connection connection = null;
 		PreparedStatement stmt = null;
+		int success = 0;
 
 		try {
 			connection = DAOUtilities.getConnection();
@@ -122,29 +121,35 @@ public class AnimalDaoImpl implements AnimalDAO {
 			stmt.setString(13, animal.getHealthStatus());
 			stmt.setObject(14, animal.getFeedingSchedule()); // Use set object for when feedingSchedule null
 			
-			stmt.executeUpdate();
+			success = stmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DatabaseConstraintViolationException("Failed to save animal: " + animal.getAnimalID(), e);
 		} finally {
 			try {
-				if (stmt != null)
-					stmt.close();
-				if (connection != null)
-					connection.close();
+			    if (success == 1) {
+    				if (stmt != null)
+    					stmt.close();
+    				if (connection != null)
+    					connection.close();
+			    }
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-
+		
+		return success == 1;
 	}
 	
 	@Override
-	public void removeAnimal(long id) {
+	public Animal removeAnimal(long id) {
 		Connection connection = null;
 		PreparedStatement stmt = null;
+		int success = 0;
+		Animal deleted = null;
 		
 		try {
+		    deleted = getAnimalByID(id);
 			connection = DAOUtilities.getConnection();
 			
 			String delete = "DELETE FROM ANIMALS WHERE animalid = (?)";
@@ -153,7 +158,7 @@ public class AnimalDaoImpl implements AnimalDAO {
 			
 			stmt.setLong(1, id);
 			
-			stmt.executeUpdate();
+			success = stmt.executeUpdate();
 				
 		} catch (SQLException sqe) {
 			sqe.printStackTrace();
@@ -169,6 +174,8 @@ public class AnimalDaoImpl implements AnimalDAO {
 				sqe.printStackTrace();
 			}
 		}
+		
+		return (success == 1) ? deleted : null;
 		
 	}
 	
@@ -269,9 +276,10 @@ public class AnimalDaoImpl implements AnimalDAO {
         return null; // TODO Throw Exception? nulls are bad
     }
 
-    public void removeSchedule(long animalId) {
+    public boolean removeSchedule(long animalId) {
         Connection connection = null;
         PreparedStatement stmt = null;
+        int success = 0;
         
         try {
             connection = DAOUtilities.getConnection();
@@ -293,6 +301,8 @@ public class AnimalDaoImpl implements AnimalDAO {
                 sqe.printStackTrace();
             }
         }
+        
+        return success ==1;
         
     }
 

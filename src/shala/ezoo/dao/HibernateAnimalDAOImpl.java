@@ -5,9 +5,12 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import shala.ezoo.model.Animal;
 
@@ -15,6 +18,7 @@ import shala.ezoo.model.Animal;
 @Transactional(rollbackOn=DataIntegrityViolationException.class)
 public class HibernateAnimalDAOImpl implements AnimalDAO {
 	
+    @Autowired
 	private SessionFactory sessionFactory;
 	
 
@@ -33,21 +37,41 @@ public class HibernateAnimalDAOImpl implements AnimalDAO {
 	}
 
 	@Override
-	public void saveAnimal(Animal animal) throws DataIntegrityViolationException {
-           sessionFactory.getCurrentSession().save(animal);
+	public boolean saveAnimal(Animal animal) throws DataIntegrityViolationException {
+	    Session session = sessionFactory.openSession();
+	    try {
+	        session.beginTransaction();
+    	    if (session.get(Animal.class, animal.getAnimalID()) == null) {
+    	        session.save(animal);
+    	        session.getTransaction().commit();
+    	        return true;
+    	    }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        session.getTransaction().rollback();
+	    } finally {
+	        session.close();
+	    }
+	    return false;
 	}
 
 	@Override
 	public void updateAnimal(Animal animal) {
 		// Overwrites the existing record in the database matching the primary key animalId
-		sessionFactory.getCurrentSession().update(animal);
+		sessionFactory.getCurrentSession().saveOrUpdate(animal);
 	}
 	
 	@Override
-	public void removeAnimal(long animalId) {
+	public Animal removeAnimal(long animalId) {
 		Animal a = new Animal();
 		a.setAnimalID(animalId);
-		sessionFactory.getCurrentSession().delete(a);
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		a = session.get(Animal.class, animalId);
+		if (a!= null) session.delete(a);
+        session.getTransaction().commit();
+        session.close();
+        return a;
 	}
 
 	@Override
@@ -65,10 +89,10 @@ public class HibernateAnimalDAOImpl implements AnimalDAO {
 	}
 
 	@Override
-    public void removeSchedule(long animalId) {
+    public boolean removeSchedule(long animalId) {
 	    Animal a = getAnimalByID(animalId);
 	    a.setFeedingSchedule(null);
-	    updateAnimal(a);
+	    return saveAnimal(a);
         
     }
 	

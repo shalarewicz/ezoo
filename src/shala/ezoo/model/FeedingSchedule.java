@@ -37,11 +37,8 @@ public class FeedingSchedule {
 	@Column
 	private String notes = "";
 	
-	@OneToMany(targetEntity=Animal.class, mappedBy="feedingSchedule", fetch=FetchType.EAGER)
+	@OneToMany(targetEntity=Animal.class, mappedBy="feedingSchedule")
 	private List<Animal> animals = new ArrayList<Animal>();
-	
-	@Transient
-	private List<Long> animalIds = new ArrayList<Long>();
 	
     public static final List<String> RECURRENCES = Arrays.asList(
 			"Every 4 Hours", "Every 6 Hours", "Every 8 Hours", "Every 12 Hours", "Daily", "Weekly", "Monthly");
@@ -57,15 +54,6 @@ public class FeedingSchedule {
 		this.notes = notes;
 	}
 	
-    public List<Long> getAnimalIds() {
-        return animalIds;
-    }
-
-    
-    public void setAnimalIds(List<Long> animalIds) {
-        this.animalIds = animalIds;
-    }
-	
     public List<Animal> getAnimals() {
         return animals;
     }
@@ -77,12 +65,10 @@ public class FeedingSchedule {
 
     public void addAnimal(Animal animal) {
         this.animals.add(animal);
-        this.animalIds.add(animal.getAnimalID());
     }
     
     public void removeAnimal(Animal animal) {
         this.animals.remove(animal);
-        this.animalIds.remove(animal.getAnimalID());
     }
 
     public void addAnimals(List<Animal> animals) {

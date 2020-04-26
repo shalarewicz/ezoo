@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,8 @@ import shala.ezoo.model.FeedingSchedule;
 @Transactional
 public class HibernateFeedingScheduleDAOImpl implements FeedingScheduleDAO {
 
-	private SessionFactory sessionFactory;
+    @Autowired
+    private SessionFactory sessionFactory;
 
     public SessionFactory getSessionFactory() {
 		return sessionFactory;

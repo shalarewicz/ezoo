@@ -36,24 +36,24 @@ public interface AnimalDAO {
 	 * Used to persist the animal to the datastore
 	 * @param animal
 	 */
-	void saveAnimal(Animal animal) throws DataIntegrityViolationException;
+	public boolean saveAnimal(Animal animal) throws DataIntegrityViolationException;
 	
 	/**
 	 * Removes an animal from the database
 	 * @param animalId id of animal being removed. 
 	 */
-	void removeAnimal(long animalId);
+	public Animal removeAnimal(long animalId);
 
 	
 	/**
 	 * Updates the Animal in the datastore
 	 * @param animal
 	 */
-	void updateAnimal(Animal animal);
+	public void updateAnimal(Animal animal);
 	
 	/**
      * Removes the schedule for the provided animal
      * @param animalId
      */
-    public void removeSchedule(long animalId);
+    public boolean removeSchedule(long animalId);
 }

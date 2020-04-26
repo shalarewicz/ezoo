@@ -11,52 +11,68 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="ANIMALS")
 public class Animal{
 	
 	@Id
+	@NotNull @Min(value=0, message="{animal.minZero}")
 	private long animalID = 0L;
+	
 	@Column
+	@NotNull @Size(max=100, message="{animal.size}")
 	private String name = "";
 	
-	@Column
+	@Column @NotNull @Size(max=80, message="{animal.size}")
 	private String taxKingdom = "";
-	@Column
+	@Column @NotNull @Size(max=80, message="{animal.size}")
 	private String taxPhylum = "";
-	@Column
+	@Column @NotNull @Size(max=80, message="{animal.size}")
 	private String taxClass = "";
-	@Column
+	@Column @NotNull @Size(max=80, message="{animal.size}")
 	private String taxOrder = "";
-	@Column
+	@Column @NotNull @Size(max=80, message="{animal.size}")
 	private String taxFamily = "";
-	@Column
+	@Column @NotNull @Size(max=80, message="{animal.size}")
 	private String taxGenus = "";
-	@Column
+	@Column @NotNull @Size(max=80, message="{animal.size}")
 	private String taxSpecies = "";
 	
-	@Column
+	@Column 
+	@Min(value=0, message="{animal.minZero}")
+	@Max(value=10000L, message="{animal.max}")
 	private double height = 0D;
-	@Column
+	
+	@Column 
+	@Min(value=0, message="{animal.minZero}")
+	@Max(value=10000L, message="{animal.max}")
 	private double weight = 0D;
 	
 	@Column
+	@Pattern(regexp= "Mammal \\(Terrestrial\\)|Mammal \\(Aquatic\\)|Mammal \\(Aviary\\)|Fish|Amphibian|Reptile|Bird", 
+	         message="{animal.type.pattern}")
+	@Size(max=80, message="{animal.size}")
 	private String type = "";
-	@Column
-	private String healthStatus = "";
 	
-	@ManyToOne(targetEntity=FeedingSchedule.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@Column
+	@Pattern(regexp = "Healthy|Sick|Injured|Dead", message="{animal.healthStatus.pattern}")
+	@Size(max=80, message="{animal.size}")
+	private String healthStatus;
+	
+	@ManyToOne(targetEntity=FeedingSchedule.class, cascade=CascadeType.ALL)
 	@JoinColumn(name="feedingschedule")
 	private FeedingSchedule feedingSchedule = null;
 	
-	@Transient
-	private Long feedingScheduleId = null;
+	public final static List<String> TYPES = Arrays.asList(
+	        "Mammal (Terrestrial)", "Mammal (Aquatic)", "Mammal (Aviary)", "Fish", "Amphibian", "Reptile", "Bird");
 	
-	public static List<String> HEALTH_STATUSES = Arrays.asList("Healthy", "Sick", "Injured", "Dead");
-	public static List<String> TYPES = Arrays.asList(
-			"Mammal (Terrestrial)", "Mammal (Aquatic)", "Mammal (Aviary)", "Fish", "Amphibian", "Reptile", "Bird");
+	public final static List<String> HEALTH_STATUSES = Arrays.asList("Healthy", "Sick", "Injured", "Dead");
 	
 	public Animal(){}
 
@@ -190,16 +206,6 @@ public class Animal{
 	public void setFeedingSchedule(FeedingSchedule schedule) {
 		this.feedingSchedule = schedule;
 	}
-
-	
-    public Long getFeedingScheduleId() {
-        return feedingScheduleId;
-    }
-
-    
-    public void setFeedingScheduleId(Long feedingScheduleId) {
-        this.feedingScheduleId = feedingScheduleId;
-    }
 
     @Override
 	public String toString() {

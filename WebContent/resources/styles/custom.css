@@ -53,6 +53,18 @@ form.inline-form {
     cursor: default;
 }
 
+.form-error {
+	color: red;
+	font-size: 10pt;
+	text-align: left;
+	vertical-align: middle;
+}
+.help-text {
+	color: #2c3e50;
+	text-align:left;
+}
+
+
 /* To get Bootstrap's Nav Dropdown to expand on hover */
 /* .dropdown:hover .dropdown-menu { */
 /* 	display: block; */
