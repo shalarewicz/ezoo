@@ -1,43 +1,47 @@
 package shala.ezoo.model;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 
 @Entity
 @Table(name="FEEDING_SCHEDULES")
 public class FeedingSchedule {
 	
 	@Id
+	@NotNull
 	private long scheduleId = 0l;
 	
 	@Column(name="feeding_time")
+	@NotNull @Size(min = 0, max = 20, message ="{feedingSchedule.size}")
 	private String feedingTime = "";
 	
 	@Column
+	@NotNull @Pattern(regexp = "Every 4 Hours|Every 6 Hours|Every 8 Hours|Every 12 Hours|Daily|Weekly|Monthly", message="{feedingSchedule.recurrence.pattern}")
+	@Size(min = 0, max = 80, message ="{feedingSchedule.size}")
 	private String recurrence = "";
 	
 	@Column
+	@NotNull @Size(min = 0, max = 80, message ="{feedingSchedule.size}")
 	private String food = "";
 	
-	@Column
+	@Column 
+	@Size(min = 0, max = 250, message ="{feedingSchedule.size}")
 	private String notes = "";
 	
-	@OneToMany(targetEntity=Animal.class, mappedBy="feedingSchedule")
+	@OneToMany(targetEntity=Animal.class, mappedBy="feedingSchedule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Animal> animals = new ArrayList<Animal>();
 	
     public static final List<String> RECURRENCES = Arrays.asList(
@@ -72,9 +76,7 @@ public class FeedingSchedule {
     }
 
     public void addAnimals(List<Animal> animals) {
-		for (Animal animal: animals) {
-			this.addAnimal(animal);
-		}
+        this.animals.addAll(animals);
 	}
 
 	public long getScheduleId() {

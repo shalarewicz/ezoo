@@ -5,15 +5,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import shala.ezoo.config.Config;
 import shala.ezoo.dao.AnimalDAO;
 import shala.ezoo.dao.FeedingScheduleDAO;
 import shala.ezoo.model.Animal;
 import shala.ezoo.model.FeedingSchedule;
+import test.shala.ezoo.config.TestConfig;
 
 public class AnimalRepositoryTest {
 	public static void main(String[] args) {
-		ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
 		AnimalDAO repo = (AnimalDAO) context.getBean(AnimalDAO.class);
 		FeedingScheduleDAO frepo = (FeedingScheduleDAO) context.getBean(FeedingScheduleDAO.class);
 		
@@ -25,9 +25,9 @@ public class AnimalRepositoryTest {
     		// Add an animal
     		System.out.println("\nAdding animal");
             Animal a = new Animal();
+            a.setName("Test Animal 2");
             a.setAnimalID(testId);
             repo.saveAnimal(a);
-            System.out.println("done");
             
             try {
                 repo.saveAnimal(a);
@@ -58,7 +58,6 @@ public class AnimalRepositoryTest {
         		a.setFeedingSchedule(fs);
         		repo.updateAnimal(a);
         		Animal updatedAnimal = repo.getAnimalByID(testId);
-        		System.out.println("animal");
         		if (!updatedAnimal.equals(a)) {
         		    repo.removeAnimal(testId);
         		    frepo.removeSchedule(testFsId);

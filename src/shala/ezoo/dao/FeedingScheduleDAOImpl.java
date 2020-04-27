@@ -33,9 +33,10 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
     }
 
 	@Override
-	public void saveSchedule(FeedingSchedule schedule) throws DatabaseConstraintViolationException {
+	public boolean saveSchedule(FeedingSchedule schedule) throws DatabaseConstraintViolationException {
 		Connection connection = null;
 		PreparedStatement stmt = null;
+		int success = 0;
 		
 		try {
 			connection = DAOUtilities.getConnection();
@@ -49,7 +50,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			stmt.setString(4, schedule.getFood());
 			stmt.setString(5, schedule.getNotes());
 			
-			stmt.executeUpdate();
+			success = stmt.executeUpdate();
 			
 		} catch (SQLException sqe) {
 			sqe.printStackTrace();
@@ -64,19 +65,22 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 				sqe.printStackTrace();
 			}
 		}
+		
+		return success == 1;
 	}
 
 	@Override
-	public void removeSchedule(long id) {
+	public FeedingSchedule removeSchedule(long id) {
 		
 		Connection connection = null;
 		PreparedStatement animalStmt = null;
 		PreparedStatement feedingStmt = null;
 		int success = 0;
+		FeedingSchedule deleted = null;
 		
 		try {
+		    deleted = getScheduleByID(id);
 			connection = DAOUtilities.getConnection();
-			
 			
 			// Remove all references to the schedule in animals
 			String animalsUpdate = "UPDATE ANIMALS SET feedingschedule = null WHERE feedingschedule = (?)";
@@ -95,7 +99,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			
 			feedingStmt.setLong(1, id);
 			
-			success = (success == feedingStmt.executeUpdate()) ? 1 : 0;
+			success = (success == feedingStmt.executeUpdate() && success == 1) ? 1 : 0;
 				
 				
 		} catch (SQLException sqe) {
@@ -115,6 +119,8 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 				sqe.printStackTrace();
 			}
 		}
+		
+		return (success == 1) ? deleted : null;
 		
 	}
 
@@ -168,19 +174,18 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 
 
 	@Override
-	public void setFeedingSchedule(FeedingSchedule schedule, Animal animal) throws DatabaseConstraintViolationException {
+	public boolean setFeedingSchedule(FeedingSchedule schedule, Animal animal) throws DatabaseConstraintViolationException {
 		// Update animal and add to Feeding_Schedules if schedule does not exist
-		
-		saveSchedule(schedule); 
-		this.setFeedingSchedule(schedule.getScheduleId(), animal.getAnimalID());
+	    return (saveSchedule(schedule) && this.setFeedingSchedule(schedule.getScheduleId(), animal.getAnimalID()));
 	}
 
 	@Override
-	public void setFeedingSchedule(long scheduleId, long animalId) {
+	public boolean setFeedingSchedule(long scheduleId, long animalId) {
 		// Update animal and add to Feeding_Schedules if schedule does not exist
 		
 		Connection connection = null;
 		PreparedStatement stmt = null;
+		int success = 0;
 		try {
 			connection = DAOUtilities.getConnection();
 			
@@ -191,7 +196,7 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 			stmt.setLong(1,  scheduleId);
 			stmt.setLong(2,  animalId);
 			
-			stmt.executeUpdate();
+			success = stmt.executeUpdate();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -207,6 +212,8 @@ public class FeedingScheduleDAOImpl implements FeedingScheduleDAO {
 				e.printStackTrace();
 			}
 		}
+		
+		return success == 1;
 		
 	}
 

@@ -34,21 +34,29 @@ public class HibernateFeedingScheduleDAOImpl implements FeedingScheduleDAO {
 		return schedule;
 	}
 
-	/**
-	 * Adds the given schedule to the database
-	 * @param schedule 
-	 * @throws DataIntegrityViolationException if a constraint violation occurs. 
-	 */
-	public void saveSchedule(FeedingSchedule schedule) throws DataIntegrityViolationException{
-        sessionFactory.getCurrentSession().save(schedule);
+	@Override
+	public boolean saveSchedule(FeedingSchedule schedule) throws DataIntegrityViolationException{
+	    Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            if (session.get(FeedingSchedule.class, schedule.getScheduleId()) == null) {
+                session.save(schedule);
+                session.getTransaction().commit();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return false;
 	}
 
 	@Override
     public List<FeedingSchedule> getAllSchedules() {
 	   return sessionFactory.getCurrentSession()
 	            .createQuery("from FeedingSchedule", FeedingSchedule.class).getResultList();
-	    
-	    
     }
 
 	@Override
@@ -57,19 +65,35 @@ public class HibernateFeedingScheduleDAOImpl implements FeedingScheduleDAO {
     }
 
 	@Override
-    public void removeSchedule(long scheduleId) {
-	    FeedingSchedule fs = new FeedingSchedule();
-	    fs.setScheduleId(scheduleId);
-	    this.sessionFactory.getCurrentSession().remove(fs);
+    public FeedingSchedule removeSchedule(long scheduleId) {
+	    Session session = this.sessionFactory.openSession();
+	    try {
+	        session.beginTransaction();
+	        FeedingSchedule fs = session.get(FeedingSchedule.class, scheduleId);
+	        if (fs != null) {
+	            for (Animal a : fs.getAnimals()) {
+	                a.setFeedingSchedule(null);
+	                session.update(a);
+	            }
+	            session.delete(fs);
+	            session.getTransaction().commit();
+	            return fs;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        session.getTransaction().rollback();
+	    } finally {
+	        session.close();
+	    }
+	    
+	    return null;
         
     }
 
 
 	@Override
-    public void setFeedingSchedule(FeedingSchedule schedule, Animal animal) {
+    public boolean setFeedingSchedule(FeedingSchedule schedule, Animal animal) {
 	    if (animal != null && schedule !=null) {
-	        System.out.println(animal);
-	        System.out.println(schedule);
     	    FeedingSchedule prev = animal.getFeedingSchedule();
     	    
     	    Session session = this.sessionFactory.openSession();
@@ -80,25 +104,33 @@ public class HibernateFeedingScheduleDAOImpl implements FeedingScheduleDAO {
     	        session.saveOrUpdate(schedule);
     	        session.saveOrUpdate(animal);
     	        session.getTransaction().commit();	
-    	        session.close();
+    	        return true;
     	    } catch (Exception e) {
     	        e.printStackTrace();
     	        session.getTransaction().rollback();
     	        animal.setFeedingSchedule(prev);
     	        schedule.removeAnimal(animal);
+    	    } finally {
+    	        session.close();
     	    }
 	    }
+	    return false;
     }
 
 	@Override
-    public void setFeedingSchedule(long schedule, long animal) {
+    public boolean setFeedingSchedule(long schedule, long animal) {
 	   Session session = this.sessionFactory.openSession();
-	   FeedingSchedule fs = session.get(FeedingSchedule.class, schedule);
-	   Animal a = session.get(Animal.class, animal);
-	   session.close();
-	   if (a != null && fs !=null) {
-	       this.setFeedingSchedule(fs, a);
+	   try {
+    	   FeedingSchedule fs = session.get(FeedingSchedule.class, schedule);
+    	   Animal a = session.get(Animal.class, animal);
+    	   session.close();
+    	   if (a != null && fs !=null) {
+    	       return this.setFeedingSchedule(fs, a);
+    	   }
+	   } catch (Exception e) {
+            e.printStackTrace();
 	   }
+	   return false;
     }
 
 }

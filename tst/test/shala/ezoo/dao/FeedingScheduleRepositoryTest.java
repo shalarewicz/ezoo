@@ -3,19 +3,18 @@ import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.dao.DataIntegrityViolationException;
 
-import shala.ezoo.config.Config;
 import shala.ezoo.dao.AnimalDAO;
 import shala.ezoo.dao.FeedingScheduleDAO;
 import shala.ezoo.model.Animal;
 import shala.ezoo.model.FeedingSchedule;
+import test.shala.ezoo.config.TestConfig;
 
 public class FeedingScheduleRepositoryTest {
 	
 	
 	public static void main(String[] args) {
-		ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
 		FeedingScheduleDAO repo = context.getBean(FeedingScheduleDAO.class);
 		AnimalDAO aRepo = context.getBean(AnimalDAO.class);
 		long testId = 2000L;
@@ -30,19 +29,13 @@ public class FeedingScheduleRepositoryTest {
 		    System.out.println("\nAdding schedule");
     		    FeedingSchedule fs = new FeedingSchedule();
     		    fs.setScheduleId(testId);
-    		    try {
-    		        repo.saveSchedule(fs);
-    		    } 
-    		    catch (DataIntegrityViolationException e) {
+    		    if (!repo.saveSchedule(fs)) {
     		        throw new RuntimeException("FAILED adding schedule");
     	        } 
-    		    
-    		    try {
-                    repo.saveSchedule(fs);
-                } catch (DataIntegrityViolationException e) {
-                    System.out.println("Test Adding Duplicate...PASS");
-                }
-    		    
+    		    // Test Duplicate addition
+    		    if (repo.saveSchedule(fs)) {
+                    throw new RuntimeException("FAILED adding duplicate schedule");
+                } 
 		    System.out.print("Done");
 		    
 		    // Get a schedule
