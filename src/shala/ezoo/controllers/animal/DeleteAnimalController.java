@@ -15,7 +15,7 @@ public class DeleteAnimalController {
     @Autowired
     private AnimalDAO animalDao;
     
-    @RequestMapping(value="/deleteAnimal/{deleteId}", method=RequestMethod.POST)
+    @RequestMapping(value="animal/delete/{deleteId}", method=RequestMethod.POST)
     public String deleteAnimalPOST(@PathVariable("deleteId") long id, HttpSession session) {
         if (animalDao.removeAnimal(id) != null) {
             session.setAttribute("message", "Animal Successfully Deleted");

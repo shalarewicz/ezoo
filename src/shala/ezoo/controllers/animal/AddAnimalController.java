@@ -21,7 +21,7 @@ import shala.ezoo.model.FeedingSchedule;
 import shala.ezoo.model.FeedingScheduleEditor;
 
 @Controller
-@RequestMapping("/addAnimal")
+@RequestMapping("/animal/create")
 public class AddAnimalController {
     
     @Autowired
@@ -41,12 +41,11 @@ public class AddAnimalController {
         
         model.addAttribute("animalStatuses", Animal.HEALTH_STATUSES);
         model.addAttribute("animalTypes", Animal.TYPES);
-        model.addAttribute("animalAction", "addAnimal");
         return "animalForm";
     }
     
     @RequestMapping(method=RequestMethod.POST)
-    public String addAnimal(@Valid @ModelAttribute("animal") Animal animal, Errors errors, Model model,  HttpSession session) {
+    public String addAnimal(@Valid @ModelAttribute Animal animal, Errors errors, Model model,  HttpSession session) {
        
         if (errors.hasErrors()) {
             model.addAttribute("message", "Please correct the specified fields.");

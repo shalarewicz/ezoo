@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -21,7 +22,7 @@ import shala.ezoo.model.FeedingSchedule;
 import shala.ezoo.model.FeedingScheduleEditor;
 
 @Controller
-@RequestMapping("/updateAnimal")
+@RequestMapping("/animal/{animalId}")
 public class UpdateAnimalController {
     @Autowired
     private AnimalDAO animalDao;
@@ -35,17 +36,17 @@ public class UpdateAnimalController {
     }
     
     @RequestMapping(method=RequestMethod.GET)
-    public String showAnimalForm(@ModelAttribute("updateAnimal") Animal animal, Model model) {
-        model.addAttribute("animal", animalDao.getAnimalByID(animal.getAnimalID()));
+    public String showAnimalForm(@PathVariable long animalId, Model model) {
+        model.addAttribute("animal", animalDao.getAnimalByID(animalId));
         
         model.addAttribute("animalStatuses", Animal.HEALTH_STATUSES);
         model.addAttribute("animalTypes", Animal.TYPES);
-        model.addAttribute("animalAction", "updateAnimal");
+        model.addAttribute("readonly", true);
         return "animalForm";
     }
     
     @RequestMapping(method=RequestMethod.POST)
-    public String updateAnimal(@Valid @ModelAttribute("animal") Animal animal, Errors errors, Model model, HttpSession session) {
+    public String updateAnimal(@Valid @ModelAttribute Animal animal, Errors errors, Model model, HttpSession session) {
         if (errors.hasErrors()) {
             session.setAttribute("message", "Please correct the specified fields.");
         } else {
@@ -69,7 +70,7 @@ public class UpdateAnimalController {
         session.setAttribute("messageClass", "alert-danger");
         model.addAttribute("animalStatuses", Animal.HEALTH_STATUSES);
         model.addAttribute("animalTypes", Animal.TYPES);
-        model.addAttribute("animalAction", "updateAnimal");
+        model.addAttribute("readonly", true);
         return "animalForm";
     }
 }

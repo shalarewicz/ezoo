@@ -1,5 +1,5 @@
 	<!-- Header -->
-	<jsp:include page="../header.jsp" />
+	<jsp:include page="header.jsp" />
 	
 	<!-- JSTL includes -->
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -62,15 +62,12 @@
 						<td><c:out value="${animal.type}" /></td>
 						<td><c:out value="${animal.healthStatus}" /></td>
 						<td><c:out value="${(animal.feedingSchedule.scheduleId) == 0 ? '' : animal.feedingSchedule.scheduleId}" /></td>
-    						<td>
-        						<sf:form commandName="updateAnimal" method="get" class="form-horizontal">
-			                        <sf:input type="hidden" class="form-control" id="id" path="animalID" value="${animal.animalID}"/>
-								    <sf:button type="submit" formaction="updateAnimal" method="get" name="updateAnimal">Update</sf:button>
-        						</sf:form>
-								<form action="deleteAnimal/${animal.animalID}" method="post" class="form-horizontal">
-								    <button type="submit">Delete</button>
-								</form>
-    						</td>
+   						<td>
+       						<form class="form-horizontal">
+		                        <button type="submit" formaction="animal/${animal.animalID}" formmethod="get">Update</button>
+							    <button type="submit" formaction="animal/delete/${animal.animalID}" formmethod="post">Delete</button>
+							</form>
+   						</td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -102,4 +99,4 @@
 	</section>
 
 	<!-- Footer -->
-	<jsp:include page="../footer.jsp" />
+	<jsp:include page="footer.jsp" />

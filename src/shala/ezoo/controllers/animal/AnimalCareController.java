@@ -37,7 +37,6 @@ public class AnimalCareController {
                 longest = a;
         model.addAttribute("longestNamedAnimal", longest);
         
-        System.out.println("Getting home");
         return "animalCareHome";
     }
     

@@ -7,10 +7,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>eZoo</title>
-<link rel="shortcut icon" href="resources/imgs/favicon.png" type="image/x-icon">
+<link rel="shortcut icon" href="${pageContext.request.contextPath }/resources/imgs/favicon.png" type="image/x-icon">
 
 <!-- CSS - Custom fonts -->
-<link href="resources/libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath }/resources/libraries/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 <!-- <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css"> -->
@@ -19,12 +19,12 @@
 <link href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 
 <!-- CSS - Bootstrap -->
-<link rel="stylesheet" type="text/css" href="resources/libraries/css/bootstrap.css"/>
-<link rel="stylesheet" type="text/css" href="resources/libraries/css/freelancer.css"/>
-<link rel="stylesheet" type="text/css" href="resources/libraries/css/half-slider.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/resources/libraries/css/bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/resources/libraries/css/freelancer.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/resources/libraries/css/half-slider.css"/>
 
 <!-- CSS - Custom -->
-<link rel="stylesheet" type="text/css" href="resources/styles/custom.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/resources/styles/custom.css"/>
 
 </head>
 <body id="page-top" class="index">
@@ -53,13 +53,13 @@
 					<li class="dropdown">
                         <a tabindex="-1" href="#" class="dropdown-toggle" data-toggle="dropdown">Animal Care<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                          <li><a href="animalCare">Home (Level 100)</a></li>
+                          <li><a href="${pageContext.request.contextPath }/animalCare">Home (Level 100)</a></li>
                           <li class="divider"></li>
-                          <li><a href="addAnimal">Add Animal</a></li>
-                          <li><a href="feedingSchedules">Feeding Schedules</a></li>
-                          <li><a href="addSchedule">Add Feeding Schedule</a></li>
-                          <li><a href="deleteSchedule">Remove Feeding Schedule</a></li>
-                          <li><a href="assignSchedule">Assign Feeding Schedule</a></li>
+                          <li><a href="${pageContext.request.contextPath }/animal/create">Add Animal</a></li>
+                          <li><a href="${pageContext.request.contextPath }/feedingSchedules">Feeding Schedules</a></li>
+                          <li><a href="${pageContext.request.contextPath }/feedingSchedule/create">Add Feeding Schedule</a></li>
+                          <li><a href="${pageContext.request.contextPath }/deleteSchedule">Remove Feeding Schedule</a></li>
+                          <li><a href="${pageContext.request.contextPath }/assignSchedule">Assign Feeding Schedule</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">

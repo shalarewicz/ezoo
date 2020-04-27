@@ -25,11 +25,11 @@
         
         <hr class="paw-primary">
         
-        <sf:form action="${animalAction}" commandName="animal" method="post" class="form-horizontal">
+        <sf:form commandName="animal" method="post" class="form-horizontal">
             <div class="form-group">
                 <sf:label for="id" path="animalID" class="col-sm-4 control-label">ID</sf:label>
                 <div class = "col-sm-4">
-                    <sf:input type="number" readonly="${animalAction == 'updateAnimal'}" class="form-control" id="id" name="id" path="animalID" required="required"/>
+                    <sf:input type="number" readonly="${readonly}" class="form-control" id="id" name="id" path="animalID" required="required"/>
                 </div>
                 <div class="col-sm-4 form-error">
                     <sf:errors path="animalID" />

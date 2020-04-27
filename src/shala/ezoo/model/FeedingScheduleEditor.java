@@ -2,10 +2,6 @@ package shala.ezoo.model;
 
 import java.beans.PropertyEditorSupport;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import shala.ezoo.dao.FeedingScheduleDAO;
-
 
 public class FeedingScheduleEditor extends PropertyEditorSupport {
    

@@ -11,15 +11,13 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"shala.ezoo.controllers.animal"})
+@ComponentScan(basePackages = {"shala.ezoo.controllers"})
 public class ServletConfig extends WebMvcConfigurerAdapter{
 
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-//        resolver.setPrefix("");
-        System.out.println("configuring view resolver");
-        resolver.setPrefix("/WEB-INF/views/animal/");
+        resolver.setPrefix("/WEB-INF/views/");
         resolver.setSuffix(".jsp");
         resolver.setExposeContextBeansAsAttributes(true);
         return resolver;
