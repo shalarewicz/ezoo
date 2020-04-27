@@ -35,12 +35,14 @@ public interface AnimalDAO {
 	/**
 	 * Used to persist the animal to the datastore
 	 * @param animal
+	 * @return true if save successful
 	 */
 	public boolean saveAnimal(Animal animal) throws DataIntegrityViolationException;
 	
 	/**
 	 * Removes an animal from the database
 	 * @param animalId id of animal being removed. 
+	 * @return the removed animal
 	 */
 	public Animal removeAnimal(long animalId);
 
@@ -54,6 +56,7 @@ public interface AnimalDAO {
 	/**
      * Removes the schedule for the provided animal
      * @param animalId
+     * @return true if the schedule was successfully removed. 
      */
     public boolean removeSchedule(long animalId);
 }

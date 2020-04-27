@@ -102,14 +102,20 @@ public class AnimalRepositoryTest {
         		all.stream().forEach((x -> System.out.println(x)));
         		System.out.println("PASS");
         		
+           // Remove Animals Schedule
+        		System.out.println("\nRemove Schedule.");
+        		repo.removeSchedule(testId);
+        		System.out.println("PASS");
+        		
+        		
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
 		finally {
 		
-    		repo.removeAnimal(testId);
+//    		repo.removeAnimal(testId);
     		repo.removeAnimal(testId2);
-    		frepo.removeSchedule(testFsId);
+//    		frepo.removeSchedule(testFsId);
     		
     		((AnnotationConfigApplicationContext) context).close();
 		}

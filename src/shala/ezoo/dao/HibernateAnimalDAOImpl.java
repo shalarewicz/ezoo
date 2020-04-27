@@ -66,11 +66,16 @@ public class HibernateAnimalDAOImpl implements AnimalDAO {
 		Animal a = new Animal();
 		a.setAnimalID(animalId);
 		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-		a = session.get(Animal.class, animalId);
-		if (a!= null) session.delete(a);
-        session.getTransaction().commit();
-        session.close();
+		try {
+		    session.beginTransaction();
+    		a = session.get(Animal.class, animalId);
+    		if (a!= null) session.delete(a);
+            session.getTransaction().commit();
+		} catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
         return a;
 	}
 

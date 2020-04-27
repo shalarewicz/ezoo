@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -254,7 +253,6 @@ public class Animal{
             if (other.feedingSchedule != null)
                 return false;
         } else if (!feedingSchedule.equals(other.feedingSchedule)) {
-            System.out.println("ITS THE FEEDING SCHEDULES");
             return false;
         }
         if (healthStatus == null) {
@@ -263,7 +261,6 @@ public class Animal{
         } else if (!healthStatus.equals(other.healthStatus))
             return false;
         if (Double.doubleToLongBits(height) != Double.doubleToLongBits(other.height)) {
-            System.out.println("its the height");
             return false;
         }
         if (name == null) {
