@@ -58,8 +58,7 @@
                           <li><a href="${pageContext.request.contextPath }/animal/create">Add Animal</a></li>
                           <li><a href="${pageContext.request.contextPath }/feedingSchedules">Feeding Schedules</a></li>
                           <li><a href="${pageContext.request.contextPath }/feedingSchedule/create">Add Feeding Schedule</a></li>
-                          <li><a href="${pageContext.request.contextPath }/deleteSchedule">Remove Feeding Schedule</a></li>
-                          <li><a href="${pageContext.request.contextPath }/assignSchedule">Assign Feeding Schedule</a></li>
+                          <li><a href="${pageContext.request.contextPath }/feedingSchedule/assign">Assign Feeding Schedule</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">

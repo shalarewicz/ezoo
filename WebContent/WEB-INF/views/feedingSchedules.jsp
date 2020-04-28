@@ -44,31 +44,20 @@
 							<td><c:out value="${schedule.recurrence}" /></td>
 							<td><c:out value="${schedule.food}" /></td>
 							<td><c:out value="${schedule.notes}" /></td>
-							<!-- ><td><c:out value="${schedule.animals}" /></td> -->
 							<td>
 								<c:forEach var="item" items="${schedule.animals}">
-									${item}<br />
+									${item.name}<br />
 								</c:forEach>
 							</td>
 							<td>
-								<form action="updateSchedule" method="get" class=form-horizontal>
+								<form class=form-horizontal>
 								    <div class="col-sm-4">
-										<input type="submit" name="updateSchedule" value="Update" />
-									    <input type="hidden" class="form-control" id="id" name="id" value="${schedule.scheduleId}"/>
-									    <input type="hidden" class="form-control" id="feedingTime" name="feedingTime" value="${schedule.feedingTime}"/>
-									    <input type="hidden" class="form-control" id="recurrence" name="recurrence" value="${schedule.recurrence}"/>
-									    <input type="hidden" class="form-control" id="food" name="food" value="${schedule.food}"/>
-									    <input type="hidden" class="form-control" id="notes" name="notes" value="${schedule.notes}"/>
-								    </div>
-								</form>
-							</td>
-							<td>
-								<form action="deleteSchedule" method="post" class=form-horizontal>
-									<div class="col-sm-4">
-										<input type="submit" name="deleteSchedule" value="Delete" />
-									    <input type="hidden" class="form-control" id="id" name="id" value="${schedule.scheduleId}"/>
-								    </div>
-								</form>
+	                                    <button formaction="feedingSchedule/${schedule.scheduleId}" formmethod="get" type="submit">Update</button>
+	                                </div>
+	                                <div class="col-sm-4">
+	                                    <button formaction="feedingSchedule/delete/${schedule.scheduleId}" formmethod="post" type="submit">Delete</button>
+	                                </div>
+	                            </form>
 							</td>
 						</tr>
 					</c:forEach>
