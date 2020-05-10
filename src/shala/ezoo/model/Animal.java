@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import shala.ezoo.validator.CheckValidScheduleID;
+
 @Entity
 @Table(name="ANIMALS")
 public class Animal{
@@ -66,6 +68,7 @@ public class Animal{
 	
 	@ManyToOne(targetEntity=FeedingSchedule.class, cascade=CascadeType.ALL)
 	@JoinColumn(name="feedingschedule")
+	@CheckValidScheduleID(message="{animal.feedingSchedule.id}")
 	private FeedingSchedule feedingSchedule = null;
 	
 	public final static List<String> TYPES = Arrays.asList(

@@ -51,20 +51,20 @@ public class UpdateAnimalController {
             session.setAttribute("message", "Please correct the specified fields.");
         } else {
             try {
-                // If a feeding schedule id was provided check to see if the id was valid
-                if (animal.getFeedingSchedule() == null || feedingDao.getScheduleByID(animal.getFeedingSchedule().getScheduleId()) != null) {
-                    // Save the animal to the database
-                    animalDao.updateAnimal(animal);
-                    session.setAttribute("message", "Animal Successfully Updated");
-                    session.setAttribute("messageClass", "alert-success");
-                    return "redirect:/animalCare";
-                } 
-            else {
-                session.setAttribute("message", "Invalid Feeding Schedule ID: " + animal.getFeedingSchedule().getScheduleId() + ".");
+                // Replace temporary binding object with actual schedule. Temp object used due to validation occurring after binding. 
+                if (animal.getFeedingSchedule() != null) {
+                    animal.setFeedingSchedule(feedingDao.getScheduleByID(animal.getFeedingSchedule().getScheduleId()));
                 }
+                
+                // Save the animal to the database
+                animalDao.updateAnimal(animal);
+                session.setAttribute("message", "Animal Successfully Updated");
+                session.setAttribute("messageClass", "alert-success");
+                return "redirect:/animalCare";
+                
             } catch (DataIntegrityViolationException e) {
                 e.printStackTrace();
-                session.setAttribute("message",  "There was a problem creating the animal at this time");
+                session.setAttribute("message",  "There was a problem updating the animal at this time");
             } 
         }
         session.setAttribute("messageClass", "alert-danger");

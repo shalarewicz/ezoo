@@ -46,25 +46,25 @@ public class AddAnimalController {
     
     @RequestMapping(method=RequestMethod.POST)
     public String addAnimal(@Valid @ModelAttribute Animal animal, Errors errors, Model model,  HttpSession session) {
-       
+        
         if (errors.hasErrors()) {
             model.addAttribute("message", "Please correct the specified fields.");
         } else {
             try {
-                // If a feeding schedule id was provided check to see if the id was valid
-                if (animal.getFeedingSchedule() == null || feedingDao.getScheduleByID(animal.getFeedingSchedule().getScheduleId()) != null) {
-                    // Save the animal to the database
-                    if (animalDao.saveAnimal(animal)) {
-                        session.setAttribute("message", "Animal Successfully Saved");
-                        session.setAttribute("messageClass", "alert-success");
-                        return "redirect:/animalCare";
-                    } else {
-                        session.setAttribute("message", "Id of " + animal.getAnimalID() + " is already in use");
-                    }
-                } 
-            else {
-                session.setAttribute("message", "Invalid Feeding Schedule ID: " + animal.getFeedingSchedule().getScheduleId() + ".");
+                // Replace temporary binding object with actual schedule. Temp object used due to validation occurring after binding. 
+                if (animal.getFeedingSchedule() != null) {
+                    animal.setFeedingSchedule(feedingDao.getScheduleByID(animal.getFeedingSchedule().getScheduleId()));
                 }
+                // Save the animal to the database
+                if (animalDao.saveAnimal(animal)) {
+                    session.setAttribute("message", "Animal Successfully Saved");
+                    session.setAttribute("messageClass", "alert-success");
+                    return "redirect:/animalCare";
+                } else {
+                    // Failed to save
+                    session.setAttribute("message", "Id of " + animal.getAnimalID() + " is already in use");
+                }
+               
             } catch (DataIntegrityViolationException e) {
                 e.printStackTrace();
                 session.setAttribute("message",  "There was a problem creating the animal at this time");
