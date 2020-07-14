@@ -32,7 +32,6 @@
 						<th class="text-center">Notes</th>
 						<th class="text-center">Animals</th>
 						<th class="text-center"></th>
-						<th class="text-center"></th>
 					</tr>
 				</thead>
 				
@@ -51,12 +50,11 @@
 							</td>
 							<td>
 								<form class=form-horizontal>
-								    <div class="col-sm-4">
-	                                    <button formaction="feedingSchedule/${schedule.scheduleId}" formmethod="get" type="submit">Update</button>
-	                                </div>
-	                                <div class="col-sm-4">
-	                                    <button formaction="feedingSchedule/delete/${schedule.scheduleId}" formmethod="post" type="submit">Delete</button>
-	                                </div>
+                                    <button formaction="${pageContext.request.contextPath }/feedingSchedule/${schedule.scheduleId}" formmethod="get" type="submit">Update</button>
+	                            </form>
+	                            <form class=form-horizontal>
+                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                                    <button formaction="${pageContext.request.contextPath }/feedingSchedule/delete/${schedule.scheduleId}" formmethod="post" type="submit">Delete</button>
 	                            </form>
 							</td>
 						</tr>

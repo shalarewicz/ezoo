@@ -54,10 +54,10 @@
 					<li class="dropdown">
                         <a tabindex="-1" href="#" class="dropdown-toggle" data-toggle="dropdown">Animal Care<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                          <li><a href="${pageContext.request.contextPath }/animalCare">Home (Level 100)</a></li>
+                          <li><a href="${pageContext.request.contextPath }/animal/home">Home (Level 100)</a></li>
                           <li class="divider"></li>
                           <li><a href="${pageContext.request.contextPath }/animal/create">Add Animal</a></li>
-                          <li><a href="${pageContext.request.contextPath }/feedingSchedules">Feeding Schedules</a></li>
+                          <li><a href="${pageContext.request.contextPath }/feedingSchedule/home">Feeding Schedules</a></li>
                           <li><a href="${pageContext.request.contextPath }/feedingSchedule/create">Add Feeding Schedule</a></li>
                           <li><a href="${pageContext.request.contextPath }/feedingSchedule/assign">Assign Feeding Schedule</a></li>
                         </ul>

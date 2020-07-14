@@ -40,7 +40,6 @@
 					<th class="text-center">Health Status</th>
 					<th class="text-center">Feeding Schedule</th>
 					<th class="text-center"></th>
-					<th class="text-center"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -64,8 +63,11 @@
 						<td><c:out value="${(animal.feedingSchedule.scheduleId) == 0 ? '' : animal.feedingSchedule.scheduleId}" /></td>
    						<td>
        						<form class="form-horizontal">
-		                        <button type="submit" formaction="animal/${animal.animalID}" formmethod="get">Update</button>
-							    <button type="submit" formaction="animal/delete/${animal.animalID}" formmethod="post">Delete</button>
+		                        <button type="submit" formaction="${pageContext.request.contextPath }/animal/${animal.animalID}" formmethod="get">Update</button>
+		                    </form>
+       						<form class="form-horizontal">
+       						    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+							    <button type="submit" formaction="${pageContext.request.contextPath }/animal/delete/${animal.animalID}" formmethod="post">Delete</button>
 							</form>
    						</td>
 					</tr>
