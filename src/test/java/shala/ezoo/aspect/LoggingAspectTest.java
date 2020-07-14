@@ -1,4 +1,4 @@
-package test.shala.ezoo.aspect;
+package shala.ezoo.aspect;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

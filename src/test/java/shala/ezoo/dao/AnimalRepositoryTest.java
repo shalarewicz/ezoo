@@ -1,19 +1,19 @@
-package test.shala.ezoo.dao;
+package shala.ezoo.dao;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import shala.ezoo.config.Config;
 import shala.ezoo.dao.AnimalDAO;
 import shala.ezoo.dao.FeedingScheduleDAO;
 import shala.ezoo.model.Animal;
 import shala.ezoo.model.FeedingSchedule;
-import test.shala.ezoo.config.TestConfig;
 
 public class AnimalRepositoryTest {
 	public static void main(String[] args) {
-		ApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 		AnimalDAO repo = (AnimalDAO) context.getBean(AnimalDAO.class);
 		FeedingScheduleDAO frepo = (FeedingScheduleDAO) context.getBean(FeedingScheduleDAO.class);
 		
