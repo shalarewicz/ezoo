@@ -7,6 +7,8 @@
   <name>eZoo</name>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
+    <finalName>eZoo</finalName>
+    
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -20,7 +22,8 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>3.2.3</version>
         <configuration>
-          <warSourceDirectory>WebContent</warSourceDirectory>
+        
+          <warSourceDirectory>src/main/webapp</warSourceDirectory>
         </configuration>
       </plugin>
     </plugins>
