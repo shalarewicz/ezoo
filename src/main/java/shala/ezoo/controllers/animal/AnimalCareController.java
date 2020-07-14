@@ -17,7 +17,7 @@ public class AnimalCareController {
     @Autowired
     private AnimalDAO dao;
 
-    @RequestMapping(value="/animalCare", method=RequestMethod.GET)
+    @RequestMapping(value="/animal/home", method=RequestMethod.GET)
     public String viewHome(Model model) {
         List<Animal> animals = dao.getAllAnimals();
         model.addAttribute("animals", animals);

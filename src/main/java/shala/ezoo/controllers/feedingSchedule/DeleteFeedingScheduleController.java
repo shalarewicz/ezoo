@@ -28,7 +28,7 @@ public class DeleteFeedingScheduleController {
         }
         
         
-        return "redirect:/feedingSchedules";
+        return "redirect:/feedingSchedule/home";
         
     }
 

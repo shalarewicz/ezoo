@@ -40,7 +40,7 @@ public class CreateFeedingScheduleController {
                 if (dao.saveSchedule(schedule)) {
                     session.setAttribute("message", "Feeding Schedule Successfully Saved");
                     session.setAttribute("messageClass", "alert-success");
-                    return "redirect:/feedingSchedules";
+                    return "redirect:/feedingSchedule/home";
                 } else {
                     session.setAttribute("message", "ID of " + schedule.getScheduleId() + " is already in use");
                 }

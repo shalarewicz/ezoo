@@ -12,7 +12,7 @@ import shala.ezoo.dao.FeedingScheduleDAO;
 import shala.ezoo.model.FeedingSchedule;
 
 @Controller
-@RequestMapping("/feedingSchedules")
+@RequestMapping("/feedingSchedule/home")
 public class FeedingScheduleController {
     
     @Autowired

@@ -25,6 +25,6 @@ public class DeleteAnimalController {
             session.setAttribute("message", "Failed to delete animal.");
         }
         
-        return "redirect:/animalCare";
+        return "redirect:/animal/home";
     }
 }

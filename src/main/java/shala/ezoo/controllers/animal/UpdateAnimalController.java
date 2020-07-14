@@ -60,7 +60,7 @@ public class UpdateAnimalController {
                 animalDao.updateAnimal(animal);
                 session.setAttribute("message", "Animal Successfully Updated");
                 session.setAttribute("messageClass", "alert-success");
-                return "redirect:/animalCare";
+                return "redirect:/animal/home";
                 
             } catch (DataIntegrityViolationException e) {
                 e.printStackTrace();

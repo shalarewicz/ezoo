@@ -39,7 +39,7 @@ public class UpdateFeedingScheduleController {
                 dao.updateSchedule(schedule);
                 session.setAttribute("message", "Feeding Schedule Successfully Updated");
                 session.setAttribute("messageClass", "alert-success");
-                return "redirect:/feedingSchedules";
+                return "redirect:/feedingSchedule/home";
             }
             catch (DataIntegrityViolationException e) {
                 e.printStackTrace();

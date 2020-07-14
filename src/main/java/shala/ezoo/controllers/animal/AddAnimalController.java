@@ -1,5 +1,6 @@
 package shala.ezoo.controllers.animal;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -24,7 +25,7 @@ import shala.ezoo.model.FeedingScheduleEditor;
 @RequestMapping("/animal/create")
 public class AddAnimalController {
     
-    @Autowired
+    @Resource
     private AnimalDAO animalDao;
     
     @Autowired
@@ -59,7 +60,7 @@ public class AddAnimalController {
                 if (animalDao.saveAnimal(animal)) {
                     session.setAttribute("message", "Animal Successfully Saved");
                     session.setAttribute("messageClass", "alert-success");
-                    return "redirect:/animalCare";
+                    return "redirect:/animal/home";
                 } else {
                     // Failed to save
                     session.setAttribute("message", "Id of " + animal.getAnimalID() + " is already in use");
