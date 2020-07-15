@@ -56,10 +56,10 @@
                         <ul class="dropdown-menu">
                           <li><a href="${pageContext.request.contextPath }/animal/home">Home (Level 100)</a></li>
                           <li class="divider"></li>
-                          <li><a href="${pageContext.request.contextPath }/animal/create">Add Animal</a></li>
+                          <li><security:authorize access="isAuthenticated()"><a href="${pageContext.request.contextPath }/animal/create">Add Animal</a></security:authorize></li>
                           <li><a href="${pageContext.request.contextPath }/feedingSchedule/home">Feeding Schedules</a></li>
-                          <li><a href="${pageContext.request.contextPath }/feedingSchedule/create">Add Feeding Schedule</a></li>
-                          <li><a href="${pageContext.request.contextPath }/feedingSchedule/assign">Assign Feeding Schedule</a></li>
+                          <li><security:authorize access="isAuthenticated()"><a href="${pageContext.request.contextPath }/feedingSchedule/create">Add Feeding Schedule</a></security:authorize></li>
+                          <li><security:authorize access="isAuthenticated()"><a href="${pageContext.request.contextPath }/feedingSchedule/assign">Assign Feeding Schedule</a></security:authorize></li>
                         </ul>
                     </li>
                     <li class="dropdown">

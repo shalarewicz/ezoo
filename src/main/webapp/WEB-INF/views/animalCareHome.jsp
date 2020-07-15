@@ -6,6 +6,7 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 	<%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
+	<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 	
 <!-- 	Just some stuff you need -->
 	<header>
@@ -39,7 +40,9 @@
 					<th class="text-center">Type</th>
 					<th class="text-center">Health Status</th>
 					<th class="text-center">Feeding Schedule</th>
+					<security:authorize access="isAuthenticated()">
 					<th class="text-center"></th>
+					</security:authorize>
 				</tr>
 			</thead>
 			<tbody>
@@ -61,6 +64,7 @@
 						<td><c:out value="${animal.type}" /></td>
 						<td><c:out value="${animal.healthStatus}" /></td>
 						<td><c:out value="${(animal.feedingSchedule.scheduleId) == 0 ? '' : animal.feedingSchedule.scheduleId}" /></td>
+						<security:authorize access="isAuthenticated()">
    						<td>
        						<form class="form-horizontal">
 		                        <button type="submit" formaction="${pageContext.request.contextPath }/animal/${animal.animalID}" formmethod="get">Update</button>
@@ -70,6 +74,7 @@
 							    <button type="submit" formaction="${pageContext.request.contextPath }/animal/delete/${animal.animalID}" formmethod="post">Delete</button>
 							</form>
    						</td>
+   						</security:authorize>
 					</tr>
 				</c:forEach>
 			</tbody>

@@ -5,6 +5,7 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+	<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 	
 <!-- 	Just some stuff you need -->
 	<header>
@@ -22,6 +23,7 @@
 			
 			<h1>eZoo <small>Feeding Schedules</small></h1>
 			<hr class="paw-primary">
+			
 			<table class="table table-striped table-hover table-responsive ezoo-datatable">
 				<thead>
 					<tr>
@@ -31,7 +33,9 @@
 						<th class="text-center">Food</th>
 						<th class="text-center">Notes</th>
 						<th class="text-center">Animals</th>
+						<security:authorize access="isAuthenticated()"> 
 						<th class="text-center"></th>
+						</security:authorize>
 					</tr>
 				</thead>
 				
@@ -48,6 +52,7 @@
 									${item.name}<br />
 								</c:forEach>
 							</td>
+							<security:authorize access="isAuthenticated()"> 
 							<td>
 								<form class=form-horizontal>
                                     <button formaction="${pageContext.request.contextPath }/feedingSchedule/${schedule.scheduleId}" formmethod="get" type="submit">Update</button>
@@ -57,6 +62,7 @@
                                     <button formaction="${pageContext.request.contextPath }/feedingSchedule/delete/${schedule.scheduleId}" formmethod="post" type="submit">Delete</button>
 	                            </form>
 							</td>
+							</security:authorize>
 						</tr>
 					</c:forEach>
 				</tbody>

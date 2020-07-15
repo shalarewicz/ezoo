@@ -6,6 +6,8 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
     <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
+    <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
+    
     
 <!--    Just some stuff you need -->
     <header>
@@ -22,7 +24,13 @@
             
             <h1>eZoo <small>Assign Feeding Schedule</small></h1>
             <hr class="paw-primary">
-        
+            
+            <security:authorize access="!isAuthenticated()"> 
+                <p>You are are not authorized to view this page.</p>
+            </security:authorize>
+            
+            <security:authorize access="isAuthenticated()"> 
+            
             <sf:form commandName="animalSchedule" method="post" class="form-horizontal">
                 <div class="form-group">
                     <sf:label for="feedingSchedule" path="feedingSchedule" class="col-sm-4 control-label">Feeding Schedule ID</sf:label>
@@ -48,7 +56,9 @@
                   <sf:button type="submit" class="btn btn-primary">Assign</sf:button>
                 </div>
                 </div>
-            </sf:form>      
+            </sf:form>
+            
+            </security:authorize>
         
       </div>
     </header>

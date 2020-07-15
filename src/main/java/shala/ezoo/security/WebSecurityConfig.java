@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .authorizeRequests()
-                .antMatchers("/", "/register").permitAll() //TODO Why isn't home page accessible without login
+                .antMatchers("/", "/register", "/animal/home", "/feedingSchedule/home").permitAll() //TODO Why isn't home page accessible without login
                 .antMatchers("/resources/**").permitAll() // Allows access to CSS resources before login
                 .antMatchers("/animal/**", "/feedingSchedule/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/account/**").hasRole("USER")

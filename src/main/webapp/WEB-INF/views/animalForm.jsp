@@ -6,6 +6,7 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
     <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
+    <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
     
 <!--    Just some stuff you need -->
     <header>
@@ -20,10 +21,16 @@
         %>
         </c:when>
         </c:choose>
-    
+        
         <h1>eZoo <small>Animal Form</small></h1>
         
         <hr class="paw-primary">
+        
+        <security:authorize access="!isAuthenticated()"> 
+                <p>You are are not authorized to view this page.</p>
+        </security:authorize>
+        
+        <security:authorize access="isAuthenticated()">
         
         <sf:form commandName="animal" method="post" class="form-horizontal">
             <div class="form-group">
@@ -159,6 +166,8 @@
                 </div>
             </div>
         </sf:form>
+        
+        </security:authorize>
         
       </div>
     </header>

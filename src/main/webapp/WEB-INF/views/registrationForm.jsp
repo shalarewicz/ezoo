@@ -24,6 +24,12 @@
         
 		<h1>eZoo <small>New User Registration</small></h1>
        	<hr class="paw-primary">
+       	
+       	<security:authorize access="isAuthenticated()"> 
+       	    <p>You are currently signed in and cannot register a new account.</p>
+       	</security:authorize>
+       	
+       	<security:authorize access="!isAuthenticated()"> 
         
         <sf:form commandName="user" method="post" class="form-horizontal">
         
@@ -96,6 +102,9 @@
                 </div>
             </div>
        </sf:form>
+       
+       </security:authorize>
+       
 	  </div>
 	</header>
 
