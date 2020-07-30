@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -38,7 +39,6 @@ public class User {
     
     @Column
     @NotNull @Size(max=80, message="{user.email.size}")
-    //TODO Unique custom validator
     private String email;
     
     @Column
@@ -52,12 +52,17 @@ public class User {
     
     @Transient
     @NotNull
-    //TODO check equality custom validator
     private String confirmPassword;
     
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "authorities", joinColumns = @JoinColumn(name = "username"), inverseJoinColumns = @JoinColumn(name = "authority"))
     private Set<Role> roles = new HashSet<Role>();
+    
+    
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "event_attendees", joinColumns = @JoinColumn(name="username"), inverseJoinColumns = @JoinColumn(name="eventid"))
+    @ManyToMany(mappedBy = "attendees", fetch = FetchType.EAGER)
+    private Set<Event> events = new HashSet<Event>();
     
     public User(String username, String firstName, String lastName, String email, String phone) {
         super();
@@ -143,7 +148,24 @@ public class User {
     
     public void removeRole(Role role) {
         this.roles.remove(role);
+    }   
+    
+    public Set<Event> getEvents() {
+        return events;
     }
+    
+    public void setEvents(Set<Event> events) {
+        this.events = events;
+    }
+    
+    public void removeEvent(Event e) {
+        this.events.remove(e);
+    }
+    
+    public void addEvent(Event e) {
+        this.events.add(e);
+    }
+    
 
     @Override public String toString() {
         return "User [username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
