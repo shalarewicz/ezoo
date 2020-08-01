@@ -12,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,9 +47,6 @@ public class AddUserController {
     @RequestMapping(value="/register", method = RequestMethod.POST) 
     public String saveUser(@Valid @ModelAttribute User user, Errors errors, Model model, HttpSession session) {
         
-        // TODO Check that passwords match
-        // TODO Check email uniqueness
-        // TODO Verify email address make use of enabled column
         ValidationUtils.invokeValidator(validator, user, errors);
         if (errors.hasErrors()) {
             model.addAttribute("message", "Please correct the specified fields");
@@ -64,7 +59,6 @@ public class AddUserController {
                     session.setAttribute("messageClass", "alert-success");
                     return "redirect:/login";
                 } else {
-                    //TODO Build a custom validator to check for unique username
                     session.setAttribute("message", "Username: " + user.getUsername() + " is already in use");
                 }
             }  catch (DataIntegrityViolationException e) {

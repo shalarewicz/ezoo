@@ -2,6 +2,7 @@ package shala.ezoo.model;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,8 +14,9 @@ import javax.persistence.Table;
 @Table(name = "ROLES")
 public class Role {
     
-    public static final Role ROLE_USER = new Role(1L, "ROLE_USER");
-    public static final Role ROLE_ADMIN = new Role(2L, "ROLE_ADMIN");
+    public static final Role ROLE_USER = new Role(1L, UserRole.USER);
+    public static final Role ROLE_ADMIN = new Role(2L, UserRole.ADMIN);
+    public static final Role ROLE_EMPLOYEE = new Role(3L, UserRole.EMPLOYEE);
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,33 +24,32 @@ public class Role {
     
     private String name;
     
-    @ManyToMany(mappedBy = "roles") // Name of field mapping the relationship
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL) // Name of field mapping the relationship
     private Set<User> users;
     
-//    private Set<Privilege> privileges;
     
     public Role() {}
     
-    public Role(Long id, String name) {
-        this.name = name;
+    public Role(Long id, UserRole name) {
+        this.name = UserRole.toString(name);
         this.id = id;
     }
     
-    public Role(String name) {
-        this.name = name;
+    public Role(UserRole name) {
+        this.name = UserRole.toString(name);
     }
     
     public Long getId() {
         return id;
     }  
    
-    public String getName() {
-        return name;
+    public UserRole getName() {
+        return UserRole.fromString(this.name);
     }
 
     
-    public void setName(String name) {
-        this.name = name;
+    public void setName(UserRole name) {
+        this.name = name.toString();
     }
     
     

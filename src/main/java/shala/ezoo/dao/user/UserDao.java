@@ -2,8 +2,8 @@ package shala.ezoo.dao.user;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
+import shala.ezoo.model.Role;
 import shala.ezoo.model.User;
-import shala.ezoo.model.UserRole;
 
 public interface UserDao {
     
@@ -57,5 +57,5 @@ public interface UserDao {
      * @param userRole
      * @throws IllegalArgumentException if username is not present
      */
-    public void assignRole(String username, UserRole userRole) throws IllegalArgumentException;
+    public void assignRole(String username, Role userRole) throws IllegalArgumentException;
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import shala.ezoo.model.Role;
 import shala.ezoo.model.User;
-import shala.ezoo.model.UserRole;
 
 @Repository
 @Transactional
@@ -101,19 +100,22 @@ public class HibernateUserDaoImpl implements UserDao {
     }
 
 
-    public void assignRole(String username, UserRole userRole) throws IllegalArgumentException {
+    public void assignRole(String username, Role role) throws IllegalArgumentException {
         Session session = sessionFactory.openSession();
         
         try {
             session.beginTransaction();
             User user = session.get(User.class, username);
+            Role r = session.get(Role.class, role.getId());
+            if (r == null) {
+                session.save(role);
+                r = role;
+            }
             if (user == null) {
                 throw new IllegalArgumentException("Error Assigning Role. Username not found");
             }
-            user.addRole(new Role(UserRole.toString(userRole)));
+            user.addRole(r);
             session.update(user);
-            
-            
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();

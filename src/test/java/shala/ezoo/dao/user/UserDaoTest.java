@@ -15,8 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import shala.ezoo.config.HibernateConfig;
+import shala.ezoo.model.Role;
 import shala.ezoo.model.User;
-import shala.ezoo.model.UserRole;
 
 //@ExtendWith(SpringExten.class) TODO For JUnit 5 (requires Spring 5)
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -40,7 +40,7 @@ public class UserDaoTest {
     
     @Before
     public void setup() {
-        user1 = new User("user1", "first1", "last1", "e mail1", "phone1");
+        
         user2 = new User("user2", "first2", "last2", "email2", "phone2");
         user3 = new User("user3", "first3", "last3", "email3", "phone3");
         user1.setPassword("password1");
@@ -170,13 +170,14 @@ public class UserDaoTest {
     
     @Test
     public void testAssignRole() {
-        dao.assignRole(user2.getUsername(), UserRole.USER);
-        assertNotNull(roleDao.getRole(UserRole.toString(UserRole.USER)));
+        dao.assignRole(user2.getUsername(), Role.ROLE_USER);
+        assertNotNull(roleDao.getRole("ROLE_USER"));
+        System.out.println(roleDao.getAllRoles(user2.getUsername()));
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void testAssignRoletoBadUser() {
-        dao.assignRole("badUsername", UserRole.USER);
+        dao.assignRole("badUsername", Role.ROLE_USER);
     }
     
     

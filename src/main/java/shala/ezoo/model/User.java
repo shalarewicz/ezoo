@@ -55,12 +55,10 @@ public class User {
     private String confirmPassword;
     
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "authorities", joinColumns = @JoinColumn(name = "username"), inverseJoinColumns = @JoinColumn(name = "authority"))
+    @JoinTable(name = "authorities", joinColumns = @JoinColumn(name="username"), inverseJoinColumns = @JoinColumn(name="authority"))
     private Set<Role> roles = new HashSet<Role>();
     
     
-//    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "event_attendees", joinColumns = @JoinColumn(name="username"), inverseJoinColumns = @JoinColumn(name="eventid"))
     @ManyToMany(mappedBy = "attendees", fetch = FetchType.EAGER)
     private Set<Event> events = new HashSet<Event>();
     
@@ -195,7 +193,4 @@ public class User {
         return true;
     }
 
-
-    
-    
 }

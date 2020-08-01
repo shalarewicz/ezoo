@@ -1,5 +1,9 @@
 package shala.ezoo.dao.user;
 
+import java.util.Collection;
+import java.util.List;
+
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.hibernate.Session;
@@ -8,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import shala.ezoo.model.Role;
+import shala.ezoo.model.UserRole;
 
 @Repository
 @Transactional
@@ -30,6 +35,7 @@ public class HibernateRoleDaoImpl implements RoleDao {
             session.getTransaction().commit();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             session.getTransaction().rollback();
         } finally {
             session.close();
@@ -38,18 +44,32 @@ public class HibernateRoleDaoImpl implements RoleDao {
         return false;
     }
     
-    public void removeRole(Role role) {
+    public void removeRole(UserRole role) {
         Session session = sessionFactory.openSession();
         
         try {
             session.beginTransaction();
-            session.remove(role);
+            Query query = sessionFactory.getCurrentSession().createQuery("delete from Role where name=:role");
+            query.setParameter("role", UserRole.toString(role));
+            query.executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
+            e.printStackTrace();
             session.getTransaction().rollback();
         } finally {
             session.close();
         }
+    }
+
+    public List<Role> getAllRoles() {
+        return sessionFactory.getCurrentSession().createQuery("from Role", Role.class).getResultList();
+    }
+
+    public List<Role> getAllRoles(String username) {
+        String hql = "select u.roles from User u where u.username=:username";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql, Collection.class);
+        query.setParameter("username", username);
+        return query.getResultList();
     }
 
 }

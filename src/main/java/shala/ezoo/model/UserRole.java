@@ -17,7 +17,7 @@ public enum UserRole {
         }
     }
     
-    public static UserRole toString(String role) {
+    public static UserRole fromString(String role) {
         switch (role) {
         case "ROLE_ADMIN":
             return ADMIN;

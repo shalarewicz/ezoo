@@ -52,7 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                .and()
             .jdbcAuthentication()
                 .dataSource(ds)
-                .passwordEncoder(new BCryptPasswordEncoder());
+                .passwordEncoder(new BCryptPasswordEncoder())
+                .authoritiesByUsernameQuery("SELECT a.username, r.name FROM authorities a, roles r WHERE a.username = ? AND r.id = a.authority");
                 //TODO Custom queries if necessary
     }
     
