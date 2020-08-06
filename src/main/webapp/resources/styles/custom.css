@@ -64,6 +64,36 @@ form.inline-form {
 	text-align:left;
 }
 
+.field-label {
+	text-align:right;
+	padding:5px;
+    color: #228534;
+    padding-right:10px;
+
+}
+
+.field {
+    text-align:left;
+    padding:5px;
+}
+
+.info-table {
+	font-size:16pt;
+}
+
+.float-left {
+	width:30%;
+	margin-left:20%;
+	float:left;
+	height:auto;
+}
+
+.float-right {
+	width:50%;
+    float:right;
+    height:auto;
+}
+
 
 /* To get Bootstrap's Nav Dropdown to expand on hover */
 /* .dropdown:hover .dropdown-menu { */

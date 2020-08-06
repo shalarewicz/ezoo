@@ -65,9 +65,9 @@
                     <li class="dropdown">
                         <a tabindex="-1" href="#" class="dropdown-toggle" data-toggle="dropdown">Event Management<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                          <li><a href="eventManagement">Home (Level 200)</a></li>
+                          <li><a href="${pageContext.request.contextPath}/event/home">Home (Level 200)</a></li>
                           <li class="divider"></li>
-                          <li><a href="#">Create Event</a></li>
+                          <li><security:authorize access="isAuthenticated()"><a href="${pageContext.request.contextPath}/event/create">Create Event</a></security:authorize></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -85,7 +85,7 @@
                           <li><security:authorize access="!isAuthenticated()"><a href="${pageContext.request.contextPath }/login">Sign In</a></security:authorize></li>
                           <li><security:authorize access="!isAuthenticated()"><a href="${pageContext.request.contextPath }/register">Register</a></security:authorize></li>
                           <li><security:authorize access="isAuthenticated()"><a href="${pageContext.request.contextPath }/logout">Sign Out</a></security:authorize></li>
-                          <li><security:authorize access="isAuthenticated()"><a href="${pageContext.request.contextPath }/user/username">Account Information</a></security:authorize></li>
+                          <li><security:authorize access="isAuthenticated()"><a href="${pageContext.request.contextPath }/user/profile">Account Information</a></security:authorize></li>
                         </ul>
                     </li>
                 </ul>

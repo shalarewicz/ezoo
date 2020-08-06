@@ -27,9 +27,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .authorizeRequests()
-                .antMatchers("/", "/register", "/animal/home", "/feedingSchedule/home").permitAll() //TODO Why isn't home page accessible without login
+                .antMatchers("/", "/register", "/animal/home", "/feedingSchedule/home", "/event/home", "/event/details/*").permitAll() //TODO Why isn't home page accessible without login
                 .antMatchers("/resources/**").permitAll() // Allows access to CSS resources before login
-                .antMatchers("/animal/**", "/feedingSchedule/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/animal/**", "/feedingSchedule/**", "/event/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/account/**").hasRole("USER")
                 .anyRequest().authenticated() // Deny-by-default
                 .and()

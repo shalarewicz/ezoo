@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -55,9 +56,9 @@ public class EventDaoTest {
         userDao.saveUser(user1);
         userDao.saveUser(user2);
 
-        event1 = new Event("name1", LocalDateTime.now(), "location1", "description1", new ArrayList<User>());
-        event2 = new Event("name2", LocalDateTime.now(), "location2", "description2", new ArrayList<User>());
-        event3 = new Event("name3", LocalDateTime.now(), "location3", "description3", new ArrayList<User>());
+        event1 = new Event("name1", "creator1", LocalDateTime.now(), "location1", "description1", new ArrayList<User>());
+        event2 = new Event("name2", "creator2", LocalDateTime.now(), "location2", "description2", new ArrayList<User>());
+        event3 = new Event("name3", "creator3", LocalDateTime.now(), "location3", "description3", new ArrayList<User>());
         eventId1 = dao.saveEvent(event1);
         eventId2 = dao.saveEvent(event2);
         event1.setEventId(eventId1);
@@ -158,15 +159,16 @@ public class EventDaoTest {
         Event actual = dao.getEvent(eventId1);
         assertEquals(event1.getAttendees().size(), actual.getAttendees().size());
         assertEquals(new ArrayList(event1.getAttendees()), new ArrayList(actual.getAttendees()));
+        
         testUpdate(event1);
     }
     
     @Test
     public void testRegisterUser() {
-        List<Event> prior = dao.getAllEvents(user1.getUsername());
+        List<Event> prior = dao.getEventsAttended(user1.getUsername());
         dao.registerEventUser(eventId1, user1.getUsername());
-        List<Event> after = dao.getAllEvents(user1.getUsername());
-        assertNotNull(dao.getAllEvents(user1.getUsername()));
+        List<Event> after = dao.getEventsAttended(user1.getUsername());
+        assertNotNull(dao.getEventsAttended(user1.getUsername()));
         assertEquals(prior.size() + 1, after.size());
         prior.add(event1);
         assertEquals(prior, after);
@@ -193,7 +195,7 @@ public class EventDaoTest {
         
         dao.registerEventUser(eventId1, user1.getUsername());
         dao.registerEventUser(eventId2, user1.getUsername());
-        List<Event> actual = dao.getAllEvents(user1.getUsername());
+        List<Event> actual = dao.getEventsAttended(user1.getUsername());
         assertTrue(actual.contains(event1));
         assertTrue(actual.contains(event2));
     }
@@ -202,9 +204,9 @@ public class EventDaoTest {
     @Test
     public void testRemoveUser() {
         dao.registerEventUser(eventId1, user1.getUsername());
-        List<Event> prior = dao.getAllEvents(user1.getUsername());
+        List<Event> prior = dao.getEventsAttended(user1.getUsername());
         dao.removeEventUser(eventId1, user1.getUsername());
-        List<Event> after = dao.getAllEvents(user1.getUsername());
+        List<Event> after = dao.getEventsAttended(user1.getUsername());
         assertEquals(prior.size() - 1, after.size());
         prior.remove(event1);
         assertEquals(prior, after);
@@ -224,13 +226,32 @@ public class EventDaoTest {
         
     }
     
-    
     @Test
-    public void testGetUserEvents() {
+    public void testGetCreatedEvents() {
+        event1.setCreator(user1.getUsername());
+        dao.updateEvent(event1);
+        
+        event3.setCreator(user1.getUsername());
+        eventId3 = dao.saveEvent(event3);
+        
+        assertTrue(dao.getAllEvents(user1.getUsername()).contains(event1));
+        assertTrue(dao.getAllEvents(user1.getUsername()).contains(event3));
+        assertFalse(dao.getAllEvents(user1.getUsername()).contains(event2));
+        assertTrue(dao.getAllEvents(user2.getUsername()).isEmpty());
+    }
+    @Test
+    public void testGetAttendedEvents() {
         dao.registerEventUser(eventId1, user1.getUsername());
         dao.removeEventUser(eventId2, user2.getUsername());
-        assertTrue(dao.getAllEvents(user1.getUsername()).contains(event1));
-        assertFalse(dao.getAllEvents(user1.getUsername()).contains(event2));
+        assertTrue(dao.getEventsAttended(user1.getUsername()).contains(event1));
+        assertFalse(dao.getEventsAttended(user1.getUsername()).contains(event2));
+    }
+    
+    @Test
+    public void testRemoveAttendedEvent() {
+        dao.registerEventUser(eventId1, user1.getUsername());
+        dao.removeEvent(eventId1);
+        assertTrue(dao.getEventsAttended(user1.getUsername()).isEmpty());
     }
     
 }

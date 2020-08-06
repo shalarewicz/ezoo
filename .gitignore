@@ -1,0 +1,15 @@
+/bin/
+/target/
+/diagrams/
+/.metadata/
+/.settings/
+/archive/
+/logs/
+.classpath
+.project
+.tern-project
+/src/main/java/shala/ezoo/service/
+/src/main/java/shala/ezoo/model/AnimalEditor.java
+/src/main/java/shala/ezoo/config/FeedingScheduleServletConfig.java
+/src/main/java/shala/ezoo/config/CustomViewResolver.java
+/src/main/java/shala/ezoo/exceptions/ResourceNotFoundException.java

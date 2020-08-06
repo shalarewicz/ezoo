@@ -51,15 +51,23 @@ public interface EventDao {
     
     /**
      * Get all events for a given user
-     * @param username specifies the user
+     * @param creator specifies the user
      * @return A list of all events being attended by the current user. 
      */
-    public List<Event> getAllEvents(String username);
+    public List<Event> getAllEvents(String creator);
     
+   
     /**
      * 
      * @return A list of all events
      */
     public List<Event> getAllEvents();
+    
+    /**
+     * Retrieves a list of attended events.
+     * @param username specifies the user attending the events
+     * @return a list of events that the user is attending
+     */
+    public List<Event> getEventsAttended(String username);
 
 }

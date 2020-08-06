@@ -15,7 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
@@ -27,16 +31,25 @@ public class Event {
     private long eventId;
     
     @Column
-    @Size(max = 100, message = "{event.size}")
+    @NotNull @Size(max = 100, message = "{event.size}")
     private String name;
     
     @Column
+    @Size(max = 80, message = "{event.size")
+    private String creator;
+    
+    @Column
+    @NotNull 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Future(message = "{event.oldDate}")
     private LocalDateTime time;
     
     @Column
+    @NotNull @Size(max = 80, message = "{event.size}")
     private String location;
     
     @Column 
+    @Size(max = 250, message = "{event.size}")
     private String description;
     
 //    @ManyToMany(mappedBy = "events", fetch = FetchType.EAGER)
@@ -46,8 +59,9 @@ public class Event {
     
     public Event() {}
     
-    public Event(String name, LocalDateTime time, String location, String description, List<User> attendees) {
+    public Event(String name, String host, LocalDateTime time, String location, String description, List<User> attendees) {
         this.name = name;
+        this.creator = host;
         this.time = time;
         this.location = location;
         this.description = description;
@@ -70,8 +84,17 @@ public class Event {
     public void setName(String name) {
         this.name = name;
     }
+    
+    
+    public String getCreator() {
+        return creator;
+    }
 
     
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
     public LocalDateTime getTime() {
         return time;
     }
@@ -117,11 +140,11 @@ public class Event {
     public void removeAttendee(User user) {
         this.attendees.remove(user);
     }
-
     
+   
     @Override 
     public String toString() {
-        return "Event [eventId=" + eventId + ", name=" + name + ", time=" + time + ", location=" + location + 
+        return "Event [eventId=" + eventId + ", name=" + name + ", creator=" + creator +", time=" + time + ", location=" + location + 
                 ", description=" + description + ", attendees=" + attendees + "]";
     }
 
@@ -135,6 +158,7 @@ public class Event {
         result = prime * result + (int) (eventId ^ (eventId >>> 32));
         result = prime * result + ((location == null) ? 0 : location.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((creator == null) ? 0 : creator.hashCode());
         result = prime * result + ((time == null) ? 0 : time.hashCode());
         return result;
     }
@@ -167,6 +191,11 @@ public class Event {
             if (other.name != null)
                 return false;
         } else if (!name.equals(other.name))
+            return false;
+        if (creator == null) {
+            if (other.creator != null)
+                return false;
+        } else if (!creator.equals(other.creator))
             return false;
         if (time == null) {
             if (other.time != null)

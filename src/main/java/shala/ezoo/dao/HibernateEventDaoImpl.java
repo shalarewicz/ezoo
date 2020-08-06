@@ -144,15 +144,22 @@ public class HibernateEventDaoImpl implements EventDao {
        
     }
 
-    public List<Event> getAllEvents(String username) {
-        String hql = "select u.events from User u where u.username=:username";
-        Query query = sessionFactory.getCurrentSession().createQuery(hql, Collection.class);
-        query.setParameter("username", username);
-        return query.getResultList();
+    public List<Event> getAllEvents(String creator) {
+        String hql = "from Event where creator=:creator";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql, Event.class);
+        query.setParameter("creator", creator);
+        return (List<Event>) query.getResultList();
     }
 
     public List<Event> getAllEvents() {
         return this.sessionFactory.getCurrentSession().createQuery("from Event", Event.class).getResultList();
     }
     
+    public List<Event> getEventsAttended(String username) {
+        String hql = "select u.events from User u where u.username=:username";
+        Query query = sessionFactory.getCurrentSession().createQuery(hql, Collection.class);
+        query.setParameter("username", username);
+        return query.getResultList();
+    }
+
 }
