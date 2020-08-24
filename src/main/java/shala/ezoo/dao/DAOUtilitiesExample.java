@@ -10,11 +10,11 @@ import java.sql.SQLException;
  * @author anon
  *
  */
-public class DAOUtilities {
+public class DAOUtilitiesExample {
 
-	private static final String CONNECTION_USERNAME = "postgres";
-	private static final String CONNECTION_PASSWORD = "***REMOVED***";
-	private static final String URL = "jdbc:postgresql://localhost:5432/eZoo";
+	private static final String CONNECTION_USERNAME = "username";
+	private static final String CONNECTION_PASSWORD = "password";
+	private static final String URL = "url";
 	
 	private static AnimalDaoImpl animalDaoImpl;
 	private static Connection connection;
