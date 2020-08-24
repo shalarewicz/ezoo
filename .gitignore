@@ -13,3 +13,5 @@
 /src/main/java/shala/ezoo/config/FeedingScheduleServletConfig.java
 /src/main/java/shala/ezoo/config/CustomViewResolver.java
 /src/main/java/shala/ezoo/exceptions/ResourceNotFoundException.java
+src/main/resources/hibernate.properties
+src/main/java/shala/ezoo/dao/DAOUtilities.java
